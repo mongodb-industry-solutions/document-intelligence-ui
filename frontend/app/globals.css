@@ -1,0 +1,70 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure consistent font family inheritance */
+*, *::before, *::after {
+  font-family: inherit;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: #F5F6F7;
+  color: #001E2B;
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure consistent font family for form elements */
+input, button, select, textarea {
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* LeafyGreen overrides for consistent light theme */
+[data-leafygreen-ui="text-input"] input {
+  background-color: #FFFFFF !important;
+  border-color: #E8EDEB !important;
+  color: #001E2B !important;
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+[data-leafygreen-ui="text-input"] input:focus {
+  border-color: #00ED64 !important;
+  box-shadow: 0 0 0 3px rgba(0, 237, 100, 0.1) !important;
+}
+
+[data-leafygreen-ui="checkbox"] {
+  color: #001E2B !important;
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+/* Ensure LeafyGreen buttons use consistent font */
+[data-lgid="lg-button"] {
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+/* Ensure all headings use consistent font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Utility classes */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

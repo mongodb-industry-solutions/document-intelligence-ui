@@ -1,0 +1,28 @@
+.header {
+  background-color: #FFFFFF;
+  padding: 12px 0;
+  border-bottom: 1px solid #E8EDEB;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.titleSection {
+  position: absolute;
+  left: 24px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #001E2B;
+  margin: 0;
+}

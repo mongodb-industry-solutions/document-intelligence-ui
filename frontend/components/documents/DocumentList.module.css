@@ -1,0 +1,90 @@
+.container {
+  background-color: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  color: #001E2B;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  color: #00ED64;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: opacity 0.2s ease;
+}
+
+.clearButton:hover {
+  opacity: 0.8;
+}
+
+.documentList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.documentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: #F5F6F7;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.documentItem:hover {
+  background-color: #F0F2F4;
+}
+
+.checkbox {
+  flex-shrink: 0;
+}
+
+.documentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.documentName {
+  color: #001E2B;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.documentMeta {
+  color: #5C6C75;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.viewButton {
+  color: #00ED64 !important;
+  border-color: #00ED64 !important;
+}
