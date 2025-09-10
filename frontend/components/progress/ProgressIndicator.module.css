@@ -1,0 +1,92 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover .circle {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border: 2px solid;
+}
+
+.completed {
+  background-color: #00ED64;
+  border-color: #00ED64;
+  color: #001E2B;
+}
+
+.active {
+  background-color: #FFFFFF;
+  border-color: #00ED64;
+  color: #001E2B;
+}
+
+.inactive {
+  background-color: #FFFFFF;
+  border-color: #C1C7C6;
+  color: #889397;
+}
+
+.stepNumber {
+  font-weight: 600;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.labelActive {
+  color: #001E2B;
+}
+
+.labelInactive {
+  color: #889397;
+}
+
+.connector {
+  width: 80px;
+  height: 2px;
+  margin: 0 16px;
+  margin-bottom: 16px; /* To align with circle center */
+  transition: all 0.3s ease;
+}
+
+.connectorCompleted {
+  background-color: #00ED64;
+}
+
+.connectorInactive {
+  background-color: #E8EDEB;
+}

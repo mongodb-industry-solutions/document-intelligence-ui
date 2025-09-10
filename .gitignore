@@ -132,7 +132,11 @@ ipython_config.py
 
 # uv
 backend/.uv-cache
+backend/uv.lock
+/backend/.uv-cache
+/backend/uv.lock
 .uv-cache
+uv.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
@@ -222,3 +226,4 @@ frontend/next-env.d.ts
 
 # Misc
 *.pem
+backend/uv.lock

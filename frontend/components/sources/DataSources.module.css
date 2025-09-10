@@ -1,0 +1,229 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #001E2B;
+  margin-bottom: 40px;
+  letter-spacing: -0.5px;
+}
+
+.sourcesSection {
+  background-color: #FFFFFF;
+  border: 2px dashed #C1C7C6;
+  border-radius: 12px;
+  padding: 48px;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.sourcesHint {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  font-size: 13px;
+  color: #5C6C75;
+  font-style: italic;
+  margin: 0;
+}
+
+.sourcesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.sourceCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  padding: 24px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.sourceCard:hover {
+  background-color: #F5F6F7;
+}
+
+.sourceCardSelected {
+  background-color: #F0FFF4;
+  box-shadow: 0 0 0 2px #00ED64;
+}
+
+.sourceIcon {
+  width: 120px;
+  height: 100px;
+  background-color: #E8EDEB;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5C6C75;
+  font-size: 14px;
+}
+
+.sourceTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #001E2B;
+  text-decoration: underline;
+}
+
+.examplesSection {
+  margin-bottom: 48px;
+  flex: 1;
+}
+
+.examplesTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #001E2B;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.examplesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.exampleCard {
+  padding: 32px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  background-color: #ffffff;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.exampleCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.exampleCardSelected {
+  border-color: #00ED64;
+  box-shadow: 0 0 0 3px rgba(0, 237, 100, 0.1);
+}
+
+.exampleTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #001E2B;
+  margin: 0 0 12px 0;
+}
+
+.exampleDescription {
+  font-size: 14px;
+  color: #5C6C75;
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #E8EDEB;
+}
+
+.backButton {
+  background-color: #FFFFFF !important;
+  color: #001E2B !important;
+  border: 1px solid #E8EDEB !important;
+  font-weight: 600 !important;
+  padding: 0 32px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #F5F6F7 !important;
+  border-color: #C1C7C6 !important;
+}
+
+.continueButton {
+  background-color: #00ED64 !important;
+  color: #001E2B !important;
+  font-weight: 600 !important;
+  padding: 0 32px !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  transition: background-color 0.2s ease;
+}
+
+.continueButton:hover:not(:disabled) {
+  background-color: #00D459 !important;
+}
+
+.continueButton:disabled {
+  background-color: #E8EDEB !important;
+  color: #889397 !important;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .sourcesGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .examplesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 40px 20px;
+  }
+  
+  .sourcesSection {
+    padding: 32px 24px;
+  }
+  
+  .examplesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .backButton,
+  .continueButton {
+    width: 100%;
+  }
+}

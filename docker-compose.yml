@@ -1,11 +1,11 @@
 services:
-  demoname-frontend:
+  document-intelligence-frontend:
     build:
       context: .
       no_cache: true
       dockerfile: Dockerfile.frontend
-    image: imagename-frontend:latest
+    image: document-intelligence-image-frontend:latest
     ports:
       - "3000:3000"
     restart: always
-    container_name: demoname-frontend
+    container_name: document-intelligence-frontend

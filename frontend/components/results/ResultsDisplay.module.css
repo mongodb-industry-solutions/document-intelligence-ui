@@ -1,0 +1,104 @@
+.container {
+  background-color: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 24px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.content {
+  color: #001E2B;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.content h1,
+.content h2,
+.content h3 {
+  color: #001E2B;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.content h1 {
+  font-size: 24px;
+}
+
+.content h2 {
+  font-size: 20px;
+}
+
+.content h3 {
+  font-size: 18px;
+}
+
+.content p {
+  margin-bottom: 16px;
+}
+
+.content ul,
+.content ol {
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+
+.content li {
+  margin-bottom: 8px;
+}
+
+.content code {
+  background-color: #F0F2F4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
+  font-size: 13px;
+  color: #001E2B;
+}
+
+.content pre {
+  background-color: #F5F6F7;
+  border: 1px solid #E8EDEB;
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.content pre code {
+  background: none;
+  padding: 0;
+}
+
+.citationLink {
+  color: #00ED64 !important;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.citationLink:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Custom scrollbar */
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: #F5F6F7;
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #C1C7C6;
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #889397;
+}
