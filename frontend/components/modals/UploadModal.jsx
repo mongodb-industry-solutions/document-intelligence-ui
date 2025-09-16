@@ -90,12 +90,6 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
     >
       <div className={styles.header}>
         <h2 className={styles.title}>Upload Documents</h2>
-        <Button
-          size="small"
-          leftGlyph={<X size={20} />}
-          onClick={onClose}
-          className={styles.closeButton}
-        />
       </div>
 
       <div className={styles.content}>
@@ -110,7 +104,7 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
             Drop files here or click to browse
           </p>
           <p className={styles.dropHint}>
-            Maximum 3 files • PDF, DOCX, TXT supported
+            Maximum 3 files • Allowed types: .pdf, .doc, .docx
           </p>
           <input
             ref={fileInputRef}

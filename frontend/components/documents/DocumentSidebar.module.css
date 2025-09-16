@@ -192,3 +192,28 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: #889397;
 }
+
+/* Delete button styles */
+.deleteButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #889397;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.deleteButton:hover {
+  background-color: #FEE;
+  color: #DC382D;
+}
+
+.deleteButton:focus {
+  outline: 2px solid #DC382D;
+  outline-offset: 2px;
+}

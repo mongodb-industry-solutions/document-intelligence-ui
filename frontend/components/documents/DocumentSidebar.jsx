@@ -4,9 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Button from "@leafygreen-ui/button";
 import Checkbox from "@leafygreen-ui/checkbox";
-import { RefreshCw, Upload } from "lucide-react";
+import { useToast } from "@/components/toast/Toast";
+import { RefreshCw, Upload, X } from "lucide-react";
 import styles from "./DocumentSidebar.module.css";
 import UploadModal from "@/components/modals/UploadModal";
+import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
 
 const DocumentSidebar = ({ 
   documents, 
@@ -15,9 +17,13 @@ const DocumentSidebar = ({
   onRefresh, 
   loading, 
   error,
-  useCase 
+  useCase,
+  onDocumentDeleted 
 }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
+  const { pushToast } = useToast();
 
   const formatFileSize = (sizeInMB) => {
     if (sizeInMB < 1) {
@@ -49,14 +55,78 @@ const DocumentSidebar = ({
 
   const handleUploadSuccess = () => {
     setShowUploadModal(false);
+    pushToast({
+      variant: 'success',
+      title: 'Upload successful',
+      description: 'Your documents have been uploaded and will be processed shortly.',
+      dismissible: true,
+      progress: 1,
+    });
     onRefresh();
+  };
+
+  const handleDeleteClick = (doc) => {
+    setDocumentToDelete(doc);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (documentToDelete) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/documents/${documentToDelete.document_id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setShowDeleteModal(false);
+          const deletedDocName = documentToDelete.document_name;
+          setDocumentToDelete(null);
+          
+          // Show success toast
+          pushToast({
+            variant: 'success',
+            title: 'Document deleted successfully',
+            description: `"${deletedDocName}" has been permanently removed from the system.`,
+            dismissible: true,
+            progress: 1,
+          });
+          
+          // Call the parent callback to refresh the document list
+          if (onDocumentDeleted) {
+            onDocumentDeleted(documentToDelete.document_id);
+          }
+          onRefresh();
+        } else {
+          console.error('Failed to delete document');
+          pushToast({
+            variant: 'error',
+            title: 'Deletion failed',
+            description: 'Unable to delete the document. Please try again.',
+            dismissible: true,
+          });
+        }
+      } catch (error) {
+        console.error('Error deleting document:', error);
+        pushToast({
+          variant: 'error',
+          title: 'Deletion error',
+          description: 'An error occurred while deleting the document. Please try again.',
+          dismissible: true,
+        });
+      }
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setDocumentToDelete(null);
   };
 
   return (
     <>
       <div className={styles.sidebar}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Sources</h2>
+          <h2 className={styles.title}>Documents</h2>
           <div className={styles.headerActions}>
             <Button
               size="default"
@@ -144,6 +214,14 @@ const DocumentSidebar = ({
                     </span>
                   </div>
                 </div>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => handleDeleteClick(doc)}
+                  aria-label={`Delete ${doc.document_name}`}
+                  title="Delete document"
+                >
+                  <X size={16} />
+                </button>
               </div>
             ))}
           </div>
@@ -156,6 +234,15 @@ const DocumentSidebar = ({
           onClose={() => setShowUploadModal(false)}
           onSuccess={handleUploadSuccess}
           useCase={useCase}
+        />
+      )}
+
+      {showDeleteModal && documentToDelete && (
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          documentName={documentToDelete.document_name}
         />
       )}
     </>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelection } from "@/contexts/SelectionContext";
+import { ToastProvider } from "@/components/toast/Toast";
 import styles from "../page.module.css";
 import AppHeader from "@/components/layout/AppHeader";
 import DocumentSidebar from "@/components/documents/DocumentSidebar";
@@ -65,32 +66,40 @@ export default function DocumentIntelligencePage() {
     fetchDocuments();
   };
 
+  const handleDocumentDeleted = (documentId) => {
+    // Remove the deleted document from selected documents if it was selected
+    setSelectedDocuments(prev => prev.filter(id => id !== documentId));
+  };
+
   // Don't render anything until we know if we need to redirect
   if (isLoading || !isSelectionComplete()) {
     return null;
   }
 
   return (
-    <div className={styles.container}>
-      <AppHeader />
-      
-      <div className={styles.main}>
-        <DocumentSidebar
-          documents={documents}
-          selectedDocuments={selectedDocuments}
-          onDocumentToggle={handleDocumentToggle}
-          onRefresh={handleRefresh}
-          loading={loading}
-          error={error}
-          useCase={useCase}
-        />
+    <ToastProvider>
+      <div className={styles.container}>
+        <AppHeader />
         
-        <DocumentAssistant
-          selectedDocuments={selectedDocuments}
-          documents={documents}
-          useCase={useCase}
-        />
+        <div className={styles.main}>
+          <DocumentSidebar
+            documents={documents}
+            selectedDocuments={selectedDocuments}
+            onDocumentToggle={handleDocumentToggle}
+            onRefresh={handleRefresh}
+            loading={loading}
+            error={error}
+            useCase={useCase}
+            onDocumentDeleted={handleDocumentDeleted}
+          />
+          
+          <DocumentAssistant
+            selectedDocuments={selectedDocuments}
+            documents={documents}
+            useCase={useCase}
+          />
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }

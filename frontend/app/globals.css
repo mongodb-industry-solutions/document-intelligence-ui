@@ -68,3 +68,26 @@ h1, h2, h3, h4, h5, h6 {
   white-space: nowrap;
   border: 0;
 }
+
+/* Fix for LeafyGreen Modal positioning when parent has overflow:hidden */
+body {
+  position: relative; /* Establish positioning context at body level */
+}
+
+/* Ensure portal root is at body level */
+body > [data-lgid="modal-backdrop"] {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+/* LeafyGreen Modal scroll container - center content */
+[data-lgid="modal-scroll-container"] {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
