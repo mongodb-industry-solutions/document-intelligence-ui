@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, useRef, createContext, useContext } from 'react';
+import { createPortal } from 'react-dom';
 import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
 import styles from './Toast.module.css';
 
@@ -10,9 +11,12 @@ const ToastContext = createContext();
 // Toast Provider Component
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
+  const idRef = useRef(0);
 
   const pushToast = (toast) => {
-    const id = Date.now();
+    // Generate a unique, monotonically increasing id to avoid key collisions
+    idRef.current += 1;
+    const id = idRef.current;
     const newToast = { ...toast, id };
     setToasts(prev => [...prev, newToast]);
 
@@ -47,13 +51,17 @@ export const useToast = () => {
 
 // Toast Container Component
 const ToastContainer = ({ toasts, removeToast }) => {
-  return (
+  const content = (
     <div className={styles.container}>
       {toasts.map(toast => (
         <Toast key={toast.id} {...toast} onClose={() => removeToast(toast.id)} />
       ))}
     </div>
   );
+  if (typeof document !== 'undefined') {
+    return createPortal(content, document.body);
+  }
+  return null;
 };
 
 // Individual Toast Component
