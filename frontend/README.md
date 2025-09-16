@@ -64,6 +64,7 @@ Create a `.env.local` file in the frontend directory with the following variable
 NEXT_PUBLIC_API_URL=http://localhost:8080
 
 # Optional: Additional configuration can be added here
+NEXT_PUBLIC_LOG_POLL_INTERVAL=2000
 # NEXT_PUBLIC_FEATURE_FLAG=true
 ```
 

@@ -128,15 +128,7 @@ const DocumentSidebar = ({
         <div className={styles.header}>
           <h2 className={styles.title}>Documents</h2>
           <div className={styles.headerActions}>
-            <Button
-              size="default"
-              leftGlyph={<RefreshCw size={16} />}
-              onClick={onRefresh}
-              disabled={loading}
-              className={styles.refreshButton}
-            >
-              Sync Sources
-            </Button>
+            
             <Button
               size="default"
               leftGlyph={<Upload size={16} />}
