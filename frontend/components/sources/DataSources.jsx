@@ -89,7 +89,7 @@ const DataSources = ({ onContinue, onBack }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>
-          Set-up your Data Sources
+          Set-up your Sources
         </h1>
         
         <ProgressIndicator currentStep={2} />
