@@ -6,11 +6,13 @@ import Button from "@leafygreen-ui/button";
 import { Upload, X } from "lucide-react";
 import styles from "./UploadModal.module.css";
 import UploadAPIClient from "@/utils/api/upload/api-client";
+import { useToast } from "@/components/toast/Toast";
 
 const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
+  const { pushToast } = useToast();
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (e) => {
@@ -64,12 +66,62 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
         industry: 'fsi', // Default industry
         useCase: useCase || 'credit_rating',
       });
+      // Response shape includes: status, files (uploaded), errors (skipped/failed), uploaded_count, skipped_count
+      const uploadedCount = response.uploaded_count || (response.files ? response.files.length : 0);
+      const skippedDuplicates = (response.errors || []).filter(e => e.error === 'duplicate');
+      const otherErrors = (response.errors || []).filter(e => e.error !== 'duplicate');
 
-      console.log('Upload successful:', response);
-      onSuccess();
+      // Show warning for duplicates, if any
+      if (skippedDuplicates.length > 0) {
+        const names = skippedDuplicates.slice(0, 3).map(e => e.filename).join(', ');
+        pushToast({
+          variant: 'warning',
+          title: 'Some files were skipped',
+          description: `${skippedDuplicates.length} duplicate file${skippedDuplicates.length > 1 ? 's were' : ' was'} not uploaded${names ? `: ${names}${skippedDuplicates.length > 3 ? ', …' : ''}` : ''}.`,
+          dismissible: true,
+          progress: 1,
+        });
+      }
+
+      // Show error toast for other failures
+      if (otherErrors.length > 0) {
+        pushToast({
+          variant: 'error',
+          title: 'Upload failed for some files',
+          description: otherErrors[0]?.error || 'Some files could not be uploaded.',
+          dismissible: true,
+        });
+      }
+
+      // Success only if any actual uploads happened
+      if (uploadedCount > 0) {
+        // First success toast: detection summary (less confusing wording)
+        pushToast({
+          variant: 'success',
+          title: 'Documents detection',
+          description: `${uploadedCount} file${uploadedCount > 1 ? 's were' : ' was'} uploaded successfully.`,
+          dismissible: true,
+          progress: 1,
+        });
+        onSuccess();
+      } else {
+        // No new files uploaded
+        if (skippedDuplicates.length > 0 && otherErrors.length === 0) {
+          // Pure duplicate case → keep modal open, let user adjust
+          setError('All selected files are already uploaded. Please remove duplicates or choose different files.');
+        } else if (otherErrors.length > 0) {
+          setError('No files were uploaded due to errors.');
+        }
+      }
     } catch (err) {
       console.error('Upload error:', err);
       setError(err.message || 'Failed to upload documents');
+      pushToast({
+        variant: 'error',
+        title: 'Upload error',
+        description: err.message || 'Failed to upload documents',
+        dismissible: true,
+      });
     } finally {
       setUploading(false);
     }
