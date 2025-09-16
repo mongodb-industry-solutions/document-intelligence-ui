@@ -125,6 +125,78 @@ class DocumentsAPIClient {
       throw error;
     }
   }
+
+  /**
+   * Start ingestion workflow based on selected sources and use case
+   * @param {Object} params
+   * @param {string} params.useCase - Use case id (e.g., credit_rating)
+   * @param {string[]} params.sources - Array like ['@local','@s3','@gdrive']
+   * @param {string} [params.industry='fsi'] - Industry code (defaults to fsi)
+   * @returns {Promise<{workflow_id:string,status:string,message:string}>}
+   */
+  static async startIngestion({ useCase, sources, industry = 'fsi' }) {
+    // Build source_paths from selection
+    const source_paths = [];
+    const add = (prefix) => {
+      // Local requires full container path, S3/GDrive use industry/use_case
+      if (prefix === '@local') {
+        source_paths.push(`@local@/docs/${industry}/${useCase}`);
+      } else if (prefix === '@s3') {
+        source_paths.push(`@s3@${industry}/${useCase}`);
+      } else if (prefix === '@gdrive') {
+        source_paths.push(`@gdrive@${industry}/${useCase}`);
+      }
+    };
+    (sources || []).forEach(add);
+
+    const workflow_id = `${industry}_${useCase}_${Date.now()}`;
+
+    const response = await fetch(`${API_BASE_URL}/api/ingestion/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source_paths, workflow_id }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to start ingestion');
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Poll ingestion workflow status
+   * @param {string} workflowId
+   * @returns {Promise<Object>} IngestionStatus
+   */
+  static async getIngestionStatus(workflowId) {
+    const response = await fetch(`${API_BASE_URL}/api/ingestion/status/${workflowId}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to fetch ingestion status');
+    }
+    return response.json();
+  }
+
+  /**
+   * Fetch recent workflow logs (INFO) for console
+   * @param {string} workflowId
+   * @param {number} [limit=200]
+   */
+  static async getIngestionLogs(workflowId, limit = 200) {
+    const response = await fetch(`${API_BASE_URL}/api/ingestion/logs/${workflowId}?limit=${limit}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!response.ok) {
+      return { logs: [] };
+    }
+    return response.json();
+  }
 }
 
 export default DocumentsAPIClient;
