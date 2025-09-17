@@ -127,6 +127,24 @@ class DocumentsAPIClient {
   }
 
   /**
+   * Check if a document already exists and is ready for interaction
+   * @param {string} documentName - filename with extension
+   * @returns {Promise<{exists_in_db:boolean, ready:boolean}>}
+   */
+  static async documentExists(documentName) {
+    const params = new URLSearchParams({ document_name: documentName });
+    const response = await fetch(`${API_BASE_URL}/api/documents/exists?${params}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to check document existence');
+    }
+    return response.json();
+  }
+
+  /**
    * Start ingestion workflow based on selected sources and use case
    * @param {Object} params
    * @param {string} params.useCase - Use case id (e.g., credit_rating)

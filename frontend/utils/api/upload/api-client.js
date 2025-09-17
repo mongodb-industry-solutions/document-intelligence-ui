@@ -8,7 +8,7 @@ class UploadAPIClient {
   /**
    * Upload documents to the system
    * @param {Object} params - Upload parameters
-   * @param {File[]} params.files - Array of files to upload (max 3)
+   * @param {File[]} params.files - Array of files to upload (max 1)
    * @param {string} params.industry - Industry type (default: fsi)
    * @param {string} params.useCase - Use case (default: credit_rating)
    * @returns {Promise<Object>} Upload response
@@ -20,17 +20,15 @@ class UploadAPIClient {
         throw new Error('No files selected');
       }
 
-      if (files.length > 3) {
-        throw new Error('Maximum 3 files can be uploaded at once');
+      if (files.length > 1) {
+        throw new Error('Only one file can be uploaded at a time');
       }
 
       // Create FormData
       const formData = new FormData();
       
-      // Add files
-      files.forEach(file => {
-        formData.append('files', file);
-      });
+      // Add single file
+      formData.append('files', files[0]);
 
       // Add other fields
       formData.append('industry', industry);
