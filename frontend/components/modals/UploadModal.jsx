@@ -6,40 +6,45 @@ import Button from "@leafygreen-ui/button";
 import { Upload, X } from "lucide-react";
 import styles from "./UploadModal.module.css";
 import UploadAPIClient from "@/utils/api/upload/api-client";
+import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useToast } from "@/components/toast/Toast";
 
-const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
+const UploadModal = ({ isOpen, onClose, onSuccess, onRefreshDocuments, useCase }) => {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
+  const [isIngesting, setIsIngesting] = useState(false);
+  const [showConsole, setShowConsole] = useState(false); // keep console visible until user closes
+  const [workflow, setWorkflow] = useState(null); // { id, status }
+  const [logs, setLogs] = useState([]);
+  const [canClose, setCanClose] = useState(false);
+  const [warning, setWarning] = useState(null); // inline warning message
   const { pushToast } = useToast();
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    
-    // Limit to 3 files
-    if (selectedFiles.length > 3) {
-      setError("Maximum 3 files can be uploaded at once");
+    if (selectedFiles.length > 1) {
+      setError("Only one file can be uploaded at a time");
+      setFiles([selectedFiles[0]]);
       return;
     }
-
-    setFiles(selectedFiles);
+    setFiles(selectedFiles.slice(0, 1));
     setError(null);
+    setWarning(null);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFiles = Array.from(e.dataTransfer.files);
-    
-    // Limit to 3 files
-    if (droppedFiles.length > 3) {
-      setError("Maximum 3 files can be uploaded at once");
+    if (droppedFiles.length > 1) {
+      setError("Only one file can be uploaded at a time");
+      setFiles([droppedFiles[0]]);
       return;
     }
-
-    setFiles(droppedFiles);
+    setFiles(droppedFiles.slice(0, 1));
     setError(null);
+    setWarning(null);
   };
 
   const handleDragOver = (e) => {
@@ -93,17 +98,36 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
         });
       }
 
-      // Success only if any actual uploads happened
-      if (uploadedCount > 0) {
+      // If duplicate and already in system, skip ingestion and just notify
+      const fileName = files[0]?.name;
+      if (skippedDuplicates.length > 0 && fileName) {
+        try {
+          const exists = await DocumentsAPIClient.documentExists(fileName);
+          if (exists?.ready) {
+            setWarning(`Document already available — ${fileName} is already processed and ready for interaction. Ingestion was not started.`);
+            // Refresh listing but keep modal open
+            if (onRefreshDocuments) onRefreshDocuments();
+            // Do not show ingestion completed toast for this case
+            return; // Do not start ingestion
+          }
+        } catch (_) {
+          // If existence check fails, fall back to normal behavior below
+        }
+      }
+
+      // Success if any actual uploads happened OR duplicate exists but not yet processed
+      if (uploadedCount > 0 || skippedDuplicates.length > 0) {
         // First success toast: detection summary (less confusing wording)
         pushToast({
           variant: 'success',
           title: 'Documents detection',
-          description: `${uploadedCount} file${uploadedCount > 1 ? 's were' : ' was'} uploaded successfully.`,
+          description: `${uploadedCount} file${uploadedCount === 1 ? '' : 's'} uploaded successfully.${skippedDuplicates.length > 0 ? ` ${skippedDuplicates.length} duplicate file${skippedDuplicates.length > 1 ? 's' : ''} on storage.` : ''}`,
           dismissible: true,
           progress: 1,
         });
-        onSuccess();
+
+        // Immediately start ingestion for @local source using current use case
+        await startIngestionAfterUpload(useCase || 'credit_rating');
       } else {
         // No new files uploaded
         if (skippedDuplicates.length > 0 && otherErrors.length === 0) {
@@ -127,6 +151,84 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
     }
   };
 
+  const formatUtc = (d) => {
+    const date = new Date(d);
+    const pad = (n) => String(n).padStart(2, '0');
+    const yyyy = date.getUTCFullYear();
+    const mm = pad(date.getUTCMonth() + 1);
+    const dd = pad(date.getUTCDate());
+    const HH = pad(date.getUTCHours());
+    const MM = pad(date.getUTCMinutes());
+    const SS = pad(date.getUTCSeconds());
+    return `${yyyy}-${mm}-${dd} ${HH}:${MM}:${SS} UTC`;
+  };
+
+  const appendLog = (message) => {
+    setLogs((prev) => [...prev, `[${formatUtc(new Date())}] ${message}`]);
+  };
+
+  const startIngestionAfterUpload = async (effectiveUseCase) => {
+    try {
+      setIsIngesting(true);
+      setShowConsole(true);
+      setCanClose(false);
+      setLogs([]);
+      appendLog(`Starting ingestion for use case "${effectiveUseCase}" with sources: local`);
+
+      const start = await DocumentsAPIClient.startIngestion({
+        useCase: effectiveUseCase,
+        sources: ['@local'],
+        industry: 'fsi',
+      });
+      setWorkflow({ id: start.workflow_id, status: start.status });
+      appendLog(`Workflow started: ${start.workflow_id}`);
+
+      // Poll logs until completed
+      const poll = async () => {
+        if (!start.workflow_id) return;
+        try {
+          const logRes = await DocumentsAPIClient.getIngestionLogs(start.workflow_id, 500);
+          if (logRes && Array.isArray(logRes.logs)) {
+            const pretty = logRes.logs.map(l => {
+              const ts = l.timestamp ? formatUtc(l.timestamp) : formatUtc(Date.now());
+              return `[${ts}] ${l.agent ? l.agent + ' - ' : ''}${l.message}`;
+            });
+            setLogs(prev => {
+              const seen = new Set(prev);
+              const combined = [...prev];
+              pretty.forEach(line => { if (!seen.has(line)) { seen.add(line); combined.push(line); } });
+              return combined;
+            });
+            const done = pretty.some(line => /completed successfully/i.test(line));
+            if (done) {
+              appendLog('Ingestion completed successfully.');
+              setIsIngesting(false); // stop the spinner but KEEP console open
+              setCanClose(true);
+              // Refresh list; do not auto-close
+              if (onRefreshDocuments) {
+                onRefreshDocuments();
+              }
+              if (onSuccess) {
+                onSuccess();
+              }
+              return;
+            }
+          }
+          setTimeout(poll, 2000);
+        } catch (err) {
+          appendLog(`Polling error: ${err.message}`);
+          setIsIngesting(false);
+          setCanClose(true);
+        }
+      };
+      setTimeout(poll, 1200);
+    } catch (err) {
+      appendLog(`Failed to start ingestion: ${err.message}`);
+      setIsIngesting(false);
+      setCanClose(true);
+    }
+  };
+
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return bytes + ' bytes';
     else if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
@@ -141,34 +243,36 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
       className={styles.modal}
     >
       <div className={styles.header}>
-        <h2 className={styles.title}>Upload Documents</h2>
+        <h2 className={styles.title}>{showConsole ? 'Ingestion Progress' : 'Upload Document'}</h2>
       </div>
 
       <div className={styles.content}>
-        <div
-          className={styles.dropZone}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <Upload size={48} className={styles.uploadIcon} />
-          <p className={styles.dropText}>
-            Drop files here or click to browse
-          </p>
-          <p className={styles.dropHint}>
-            Maximum 3 files • Allowed types: .pdf, .doc, .docx
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept=".pdf,.docx,.txt"
-            onChange={handleFileSelect}
-            className={styles.fileInput}
-          />
-        </div>
+        {!showConsole && (
+          <div
+            className={styles.dropZone}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload size={48} className={styles.uploadIcon} />
+            <p className={styles.dropText}>
+              Drop a file here or click to browse
+            </p>
+            <p className={styles.dropHint}>
+              Maximum 1 file • Allowed types: .pdf, .doc, .docx
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple={false}
+              accept=".pdf,.docx,.txt"
+              onChange={handleFileSelect}
+              className={styles.fileInput}
+            />
+          </div>
+        )}
 
-        {files.length > 0 && (
+        {!showConsole && files.length > 0 && (
           <div className={styles.fileList}>
             <h3 className={styles.fileListTitle}>Selected Files</h3>
             {files.map((file, index) => (
@@ -190,43 +294,104 @@ const UploadModal = ({ isOpen, onClose, onSuccess, useCase }) => {
           </div>
         )}
 
-        {error && (
+        {!showConsole && error && (
           <div className={styles.error}>
             {error}
           </div>
         )}
 
-        <div className={styles.info}>
-          <p className={styles.infoText}>
-            <strong>Industry:</strong> FSI (Financial Services)
-          </p>
-          <p className={styles.infoText}>
-            <strong>Use Case:</strong> {useCase || 'Credit Rating'}
-          </p>
-          <p className={styles.infoText}>
-            <strong>Destination:</strong> Local storage
-          </p>
-        </div>
+        {!showConsole && warning && (
+          <div className={styles.warning}>
+            {warning}
+          </div>
+        )}
+
+        {!showConsole && (
+          <div className={styles.info}>
+            <p className={styles.infoText}>
+              <strong>Industry:</strong> FSI (Financial Services)
+            </p>
+            <p className={styles.infoText}>
+              <strong>Use Case:</strong> {useCase || 'Credit Rating'}
+            </p>
+            <p className={styles.infoText}>
+              <strong>Destination:</strong> Local storage
+            </p>
+          </div>
+        )}
+
+        {showConsole && (
+          <div style={{
+            background: '#0b1220',
+            color: '#e6edf3',
+            borderRadius: 8,
+            padding: 16,
+            height: '60vh',
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            fontSize: 13,
+            overflowY: 'auto',
+            border: '1px solid #1f2a44'
+          }} aria-live="polite" role="log">
+            {logs.length === 0 ? (
+              <div style={{ opacity: 0.75 }}>Starting ingestion…</div>
+            ) : (
+              logs.map((line, idx) => (<div key={idx}>{line}</div>))
+            )}
+          </div>
+        )}
       </div>
 
       <div className={styles.footer}>
-        <Button
-          size="large"
-          variant="default"
-          onClick={onClose}
-          disabled={uploading}
-        >
-          Cancel
-        </Button>
-        <Button
-          size="large"
-          variant="primary"
-          onClick={handleUpload}
-          disabled={files.length === 0 || uploading}
-          className={styles.uploadButton}
-        >
-          {uploading ? 'Uploading...' : 'Upload and Ingest'}
-        </Button>
+        {showConsole ? (
+          <>
+            <Button
+              size="large"
+              variant="default"
+              onClick={onClose}
+              disabled={isIngesting}
+            >
+              {isIngesting ? 'Close disabled while ingesting' : 'Close'}
+            </Button>
+            {isIngesting ? (
+              <Button
+                size="large"
+                variant="primary"
+                disabled
+                className={styles.uploadButton}
+              >
+                Ingesting…
+              </Button>
+            ) : (
+              <Button
+                size="large"
+                variant="default"
+                disabled
+              >
+                Ingested!
+              </Button>
+            )}
+          </>
+        ) : (
+          <>
+            <Button
+              size="large"
+              variant="default"
+              onClick={onClose}
+              disabled={uploading}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="large"
+              variant="primary"
+              onClick={handleUpload}
+              disabled={files.length === 0 || uploading}
+              className={styles.uploadButton}
+            >
+              {uploading ? 'Uploading...' : 'Upload and Ingest'}
+            </Button>
+          </>
+        )}
       </div>
     </Modal>
   );

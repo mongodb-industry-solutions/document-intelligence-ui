@@ -54,11 +54,11 @@ const DocumentSidebar = ({
   };
 
   const handleUploadSuccess = () => {
-    setShowUploadModal(false);
+    // Keep modal open; just refresh the list and notify user
     pushToast({
       variant: 'success',
-      title: 'Upload successful',
-      description: 'Your documents have been uploaded and will be processed shortly.',
+      title: 'Ingestion completed',
+      description: 'The document is now available for interaction. You can close this window.',
       dismissible: true,
       progress: 1,
     });
@@ -225,6 +225,7 @@ const DocumentSidebar = ({
           isOpen={showUploadModal}
           onClose={() => setShowUploadModal(false)}
           onSuccess={handleUploadSuccess}
+          onRefreshDocuments={onRefresh}
           useCase={useCase}
         />
       )}
