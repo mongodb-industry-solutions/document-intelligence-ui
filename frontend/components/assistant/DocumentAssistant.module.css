@@ -16,6 +16,12 @@
   border-bottom: 1px solid #E8EDEB;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .titleSection {
   display: flex;
   flex-direction: column;
@@ -39,6 +45,43 @@
 .statusText {
   color: #001E2B;
   font-weight: 500;
+}
+
+.newChatButton {
+  background-color: #F5F6F7;
+  border: 1px solid #E8EDEB;
+  color: #001E2B;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.newChatButton:hover {
+  background-color: #E8EDEB;
+  border-color: #D1D9D6;
+}
+
+.citationsButton {
+  background-color: #3B82F6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.citationsButton:hover {
+  background-color: #2563EB;
+  transform: translateY(-1px);
 }
 
 .title {

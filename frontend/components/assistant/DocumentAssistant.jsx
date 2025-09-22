@@ -51,10 +51,42 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       // Handle capabilities question without requiring documents
       setQuery(question.question);
       handleSubmit(new Event('submit'), question.question);
+    } else if (question.id === "memory") {
+      // Handle memory question without requiring documents - clear selected documents
+      setQuery(question.question);
+      handleSubmit(new Event('submit'), question.question);
     } else if (selectedDocuments.length > 0) {
       setQuery(question.question);
       handleSubmit(new Event('submit'), question.question);
     }
+  };
+
+  const handleStartNewChat = async () => {
+    try {
+      // Call backend to start new session
+      const res = await fetch(`${API_BASE_URL}/api/qa/new-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // Store new session ID
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('di_session_id', data.session_id);
+        }
+      }
+    } catch (error) {
+      console.error('Error starting new session:', error);
+    }
+
+    // Clear all messages and reset state
+    setMessages([]);
+    setCompletedMessages({});
+    setWorkflowSteps([]);
+    setQuery("");
+    setShowCitationsModal(false);
+    setSelectedCitations([]);
   };
 
 
@@ -63,8 +95,9 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     
     const questionText = customQuery || query;
     
-    // Allow capabilities question without documents
-    if (!questionText.trim() || (selectedDocuments.length === 0 && questionText !== "What can you do for me?")) {
+    // Allow capabilities and memory questions without documents
+    const allowedWithoutDocuments = ["What can you do for me?", "What questions have I asked you so far?"];
+    if (!questionText.trim() || (selectedDocuments.length === 0 && !allowedWithoutDocuments.includes(questionText))) {
       return;
     }
 
@@ -90,9 +123,11 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
 
       // Use agentic RAG endpoint
       const endpoint = '/api/qa/query';
+      // For memory questions, don't filter by documents
+      const documentIds = questionText === "What questions have I asked you so far?" ? [] : selectedDocuments;
       const requestBody = {
         query: questionText,
-        selected_document_ids: selectedDocuments,
+        selected_document_ids: documentIds,
         session_id: sessionId,
         use_case: useCase
       };
@@ -151,14 +186,26 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
           <h2 className={styles.title}>Document Assistant</h2>
           <p className={styles.subtitle}>For {formatUseCase(useCase)}</p>
         </div>
-        {selectedDocuments.length > 0 && (
-          <div className={styles.selectionStatus}>
-            <span className={styles.statusIcon}>📄</span>
-            <span className={styles.statusText}>
-              {selectedDocuments.length} document{selectedDocuments.length > 1 ? 's' : ''} selected
-            </span>
-          </div>
-        )}
+        <div className={styles.headerActions}>
+          {messages.length > 0 && (
+            <Button
+              variant="default"
+              size="small"
+              onClick={handleStartNewChat}
+              className={styles.newChatButton}
+            >
+              🆕 Start New Chat
+            </Button>
+          )}
+          {selectedDocuments.length > 0 && (
+            <div className={styles.selectionStatus}>
+              <span className={styles.statusIcon}>📄</span>
+              <span className={styles.statusText}>
+                {selectedDocuments.length} document{selectedDocuments.length > 1 ? 's' : ''} selected
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={styles.chatContainer}>
@@ -223,7 +270,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                         setCompletedMessages(prev => ({ ...prev, [message.messageId]: true }));
                       }}
                     />
-                    {message.citations && message.citations.length > 0 && (
+                    {message.citations && message.citations.length > 0 && completedMessages[message.messageId] && (
                       <button 
                         className={styles.citationsButton}
                         onClick={() => {
@@ -265,6 +312,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             onQuestionSelect={handlePreCannedQuestion}
             useCase={useCase}
             hasSelectedDocuments={selectedDocuments.length > 0}
+            hasPreviousMessages={messages.length > 1} // More than 1 because first message is AI greeting
           />
         </div>
 
