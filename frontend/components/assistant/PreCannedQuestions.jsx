@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Button from "@leafygreen-ui/button";
-import { MessageCircle, Search, FileText, Brain, HelpCircle, TrendingUp } from "lucide-react";
+import { MessageCircle, Search, FileText, Brain, HelpCircle, TrendingUp, HistoryIcon } from "lucide-react";
 import styles from "./PreCannedQuestions.module.css";
 
-const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments }) => {
+const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, hasPreviousMessages }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   // Define pre-canned questions based on use case and capabilities
@@ -20,17 +20,17 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments })
       },
       {
         id: "summarize",
-        question: "Summarize the key points from my documents",
+        question: "Summarize the key points from selected documents",
         icon: FileText,
         description: "Get a comprehensive summary of your selected documents",
         category: "analysis"
       },
       {
-        id: "analyze",
-        question: "Analyze trends and patterns in my data",
-        icon: TrendingUp,
-        description: "Identify patterns and insights across your documents",
-        category: "analysis"
+        id: "memory",
+        question: "What questions have I asked you so far?",
+        icon: HistoryIcon,
+        description: "Review your conversation history",
+        category: "memory"
       }
     ];
 
@@ -95,7 +95,8 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments })
         {questions.map((question) => {
           const IconComponent = question.icon;
           const isSelected = selectedQuestion === question.id;
-          const isDisabled = !hasSelectedDocuments && question.category !== "general";
+          const isDisabled = !hasSelectedDocuments && question.category !== "general" && 
+                            (question.id !== "memory" || !hasPreviousMessages);
           
           return (
             <button
