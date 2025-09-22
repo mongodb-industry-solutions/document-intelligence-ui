@@ -7,6 +7,7 @@ import Card from "@leafygreen-ui/card";
 import { FileText } from "lucide-react";
 import Typewriter from "@/components/common/Typewriter";
 import CitationsModal from "@/components/modals/CitationsModal";
+import PreCannedQuestions from "./PreCannedQuestions";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import styles from "./DocumentAssistant.module.css";
 
@@ -20,6 +21,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [completedMessages, setCompletedMessages] = useState({});
   const [showCitationsModal, setShowCitationsModal] = useState(false);
   const [selectedCitations, setSelectedCitations] = useState([]);
+  const [workflowSteps, setWorkflowSteps] = useState([]);
   const messagesEndRef = useRef(null);
   
   const formatUseCase = (useCase) => {
@@ -44,22 +46,38 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       .map(doc => doc.document_name);
   };
 
-  const handleSubmit = async (e) => {
+  const handlePreCannedQuestion = (question) => {
+    if (question.id === "capabilities") {
+      // Handle capabilities question without requiring documents
+      setQuery(question.question);
+      handleSubmit(new Event('submit'), question.question);
+    } else if (selectedDocuments.length > 0) {
+      setQuery(question.question);
+      handleSubmit(new Event('submit'), question.question);
+    }
+  };
+
+
+  const handleSubmit = async (e, customQuery = null) => {
     e.preventDefault();
     
-    if (!query.trim() || selectedDocuments.length === 0) {
+    const questionText = customQuery || query;
+    
+    // Allow capabilities question without documents
+    if (!questionText.trim() || (selectedDocuments.length === 0 && questionText !== "What can you do for me?")) {
       return;
     }
 
     const userMessage = {
       type: 'user',
-      content: query,
+      content: questionText,
       timestamp: new Date().toISOString(),
     };
 
     setMessages(prev => [...prev, userMessage]);
     setQuery("");
     setLoading(true);
+    setWorkflowSteps([]);
 
     try {
       // Generate session ID with timestamp format
@@ -70,15 +88,19 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         return id;
       })()) : undefined;
 
-      const res = await fetch(`${API_BASE_URL}/api/qa/query`, {
+      // Use agentic RAG endpoint
+      const endpoint = '/api/qa/query';
+      const requestBody = {
+        query: questionText,
+        selected_document_ids: selectedDocuments,
+        session_id: sessionId,
+        use_case: useCase
+      };
+
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          selected_documents: selectedDocuments,
-          max_chunks: 10,
-          session_id: sessionId,
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!res.ok) {
@@ -96,7 +118,18 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         confidence: data.confidence,
         citations: data.citations || [],
         messageId: `msg_${Date.now()}`,
+        // Agentic RAG specific fields
+        workflowSteps: data.workflow_steps || [],
+        gradingResults: data.grading_results || null,
+        queryRewrites: data.query_rewrites || null,
+        reasoning: data.reasoning || null,
+        isAgenticRAG: true
       };
+
+      // Update workflow steps for display
+      if (data.workflow_steps) {
+        setWorkflowSteps(data.workflow_steps);
+      }
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err) {
       const assistantMessage = {
@@ -110,34 +143,6 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     }
   };
 
-  const suggestedQuestions = [
-    "What are the main differences between the documents?",
-    "Summarize the key findings from these reports",
-    "What are the risk factors mentioned?",
-    "Compare the financial metrics across documents"
-  ];
-
-  const suggestedActions = [
-    {
-      icon: "📄",
-      title: "Summarize",
-      description: "Provide a summary of the selected documents.",
-    },
-    {
-      icon: "🔍",
-      title: "Compare",
-      description: "Compare key metrics across documents.",
-    },
-    {
-      icon: "📊",
-      title: "Extract Data",
-      description: "Extract tables and figures.",
-    },
-  ];
-
-  const handleSuggestedQuestion = (question) => {
-    setQuery(question);
-  };
 
   return (
     <div className={styles.container}>
@@ -157,80 +162,42 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       </div>
 
       <div className={styles.chatContainer}>
+        {/* Sticky Scheduled Report Section */}
+        <div className={styles.stickyReportSection}>
+          <Card className={styles.reportCard}>
+            <div className={styles.reportContent}>
+              <div className={styles.reportIcon}>
+                <FileText size={24} color="#00684A" />
+              </div>
+              <div className={styles.reportInfo}>
+                <h4 className={styles.reportTitle}>Scheduled Report #1</h4>
+                <p className={styles.reportDescription}>Description</p>
+              </div>
+              <div className={styles.reportActions}>
+                <Button 
+                  size="default" 
+                  variant="default" 
+                  className={styles.reportButton}
+                >
+                  Open
+                </Button>
+                <Button 
+                  size="default" 
+                  variant="primary" 
+                  className={styles.reportButton}
+                >
+                  Download
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+
         <div className={`${styles.messagesContainer} ${messages.length > 0 ? styles.hasMessages : ''}`}>
           <div className={`${styles.assistantMessage} ${styles.welcome}`}>
             <div className={styles.messageAvatar}>AI</div>
             <div className={`${styles.messageBubble} ${styles.welcomeBubble}`}>
               <p>Hi! I'm your AI Assistant. How can I help you?</p>
-              {selectedDocuments.length === 0 ? (
-                <p>Select documents to start asking questions.</p>
-              ) : (
-                <p>Perhaps, to start with, have a look at the pre-defined report base on your document selection.</p>
-              )}
-              
-              <Card className={`${styles.reportCard} ${selectedDocuments.length === 0 ? styles.disabled : ''}`}>
-                <div className={styles.reportContent}>
-                  <div className={styles.reportIcon}>
-                    <FileText size={24} color="#00684A" />
-                  </div>
-                  <div className={styles.reportInfo}>
-                    <h4 className={styles.reportTitle}>Scheduled Report #1</h4>
-                    <p className={styles.reportDescription}>Description</p>
-                  </div>
-                  <div className={styles.reportActions}>
-                    <Button 
-                      size="default" 
-                      variant="default" 
-                      className={styles.reportButton}
-                      disabled={selectedDocuments.length === 0}
-                    >
-                      Open
-                    </Button>
-                    <Button 
-                      size="default" 
-                      variant="primary" 
-                      className={styles.reportButton}
-                      disabled={selectedDocuments.length === 0}
-                    >
-                      Download
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-              
-              <div className={styles.suggestedActions}>
-                <h4>Suggested Actions</h4>
-                <div className={styles.actionCards}>
-                  {suggestedActions.map((action, index) => (
-                    <Card 
-                      key={index} 
-                      className={`${styles.actionCard} ${selectedDocuments.length === 0 ? styles.disabled : ''}`}
-                      onClick={() => selectedDocuments.length > 0 && handleSuggestedQuestion(`${action.title} the selected documents`)}
-                      contentStyle={selectedDocuments.length > 0 ? "clickable" : ""}
-                    >
-                      <div className={styles.actionIcon}>{action.icon}</div>
-                      <h5 className={styles.actionTitle}>{action.title}</h5>
-                      <p className={styles.actionDescription}>{action.description}</p>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.suggestions}>
-                <h4>Suggested Questions</h4>
-                <div className={styles.suggestionsList}>
-                  {suggestedQuestions.map((question, index) => (
-                    <button
-                      key={index}
-                      className={`${styles.suggestionButton} ${selectedDocuments.length === 0 ? styles.disabled : ''}`}
-                      onClick={() => selectedDocuments.length > 0 && handleSuggestedQuestion(question)}
-                      disabled={selectedDocuments.length === 0}
-                    >
-                      {question}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
           
@@ -290,6 +257,15 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             </div>
           )}
           <div ref={messagesEndRef} />
+        </div>
+
+        {/* Quick Questions Section - positioned above input */}
+        <div className={styles.quickQuestionsSection}>
+          <PreCannedQuestions 
+            onQuestionSelect={handlePreCannedQuestion}
+            useCase={useCase}
+            hasSelectedDocuments={selectedDocuments.length > 0}
+          />
         </div>
 
         <form onSubmit={handleSubmit} className={styles.inputForm}>
