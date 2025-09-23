@@ -1,3 +1,13 @@
+.loadingMessage {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #5C6C75;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.85;
+  width: max-content;
+}
+
 /* Pulsing green circle for availability */
 .pulseCircle {
   display: inline-block;
@@ -9,6 +19,23 @@
   vertical-align: middle;
   box-shadow: 0 0 0 0 #00ED64;
   animation: pulse 1.5s infinite;
+}
+
+.messageBubbleContent {
+  position: relative;
+}
+
+.copyButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  padding: 2px;
+  border: none;
+  cursor: pointer;
 }
 
 @keyframes pulse {
@@ -159,7 +186,7 @@
 .messageBubble {
   background-color: #F5F6F7;
   border-radius: 10px;
-  padding: 16px 20px;
+  padding: 10px 20px;
   max-width: 70%;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -193,7 +220,7 @@
   background-color: #03ea633f;
   color: #001E2B;
   border-radius: 10px;
-  padding: 16px 20px;
+  padding: 10px 20px;
   max-width: 70%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
@@ -314,7 +341,7 @@
 .quickQuestionsSection {
   background-color: #FFFFFF;
   border-top: 1px solid #E8EDEB;
-  padding: 12px 24px;
+  padding: 12px 20px;
 }
 
 .messagesContainer {
@@ -472,7 +499,7 @@
   max-width: max-content;
   min-height: auto;
   box-sizing: border-box;
-  padding: 16px 20px;
+  padding: 10px 20px;
 }
 
 /* Keep welcome layout stable regardless of selection */
@@ -495,7 +522,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 24px;
+  padding: 10px 30px;
   background-color: #FFFFFF;
   border-top: 1px solid #E8EDEB;
 }
@@ -506,11 +533,11 @@
 
 /* Override LeafyGreen TextInput styles for consistent height */
 .input > div {
-  height: 48px !important;
+  height: 40px !important;
 }
 
 .input input {
-  height: 48px !important;
+  height: 40px !important;
   font-size: 16px !important;
   padding: 12px 16px !important;
   box-sizing: border-box !important;

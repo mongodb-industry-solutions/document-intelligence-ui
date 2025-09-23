@@ -10,6 +10,8 @@ import CitationsModal from "@/components/modals/CitationsModal";
 import PreCannedQuestions from "./PreCannedQuestions";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import styles from "./DocumentAssistant.module.css";
+import IconButton from '@leafygreen-ui/icon-button';
+import Icon from '@leafygreen-ui/icon';
 
 // Use environment variable for backend URL with fallback
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
@@ -23,7 +25,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [selectedCitations, setSelectedCitations] = useState([]);
   const [workflowSteps, setWorkflowSteps] = useState([]);
   const messagesEndRef = useRef(null);
-  
+
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
     return useCase
@@ -45,6 +47,17 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       .filter(doc => selectedDocuments.includes(doc.document_id))
       .map(doc => doc.document_name);
   };
+
+  //Copy answers
+    const handleCopy = (text) => {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          console.log("Copied to clipboard:", text);
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    };
 
   const handlePreCannedQuestion = (question) => {
     if (question.id === "capabilities") {
@@ -92,9 +105,9 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
 
   const handleSubmit = async (e, customQuery = null) => {
     e.preventDefault();
-    
+
     const questionText = customQuery || query;
-    
+
     // Allow capabilities and memory questions without documents
     const allowedWithoutDocuments = ["What can you do for me?", "What questions have I asked you so far?"];
     if (!questionText.trim() || (selectedDocuments.length === 0 && !allowedWithoutDocuments.includes(questionText))) {
@@ -176,6 +189,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     } finally {
       setLoading(false);
     }
+
+    
   };
 
 
@@ -195,7 +210,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
           </div>
         </div>
         <div className={styles.headerActions}>
-          
+
           {selectedDocuments.length > 0 && (
             <div className={styles.selectionStatus}>
               <span className={styles.statusIcon}>📄</span>
@@ -211,7 +226,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
               onClick={handleStartNewChat}
               className={styles.newChatButton}
             >
-               Start New Chat
+              Start New Chat
             </Button>
           )}
         </div>
@@ -230,14 +245,14 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <p className={styles.reportDescription}>Description</p>
               </div>
               <div className={styles.reportActions}>
-                <Button 
-                  size="default" 
-                  variant="default" 
+                <Button
+                  size="default"
+                  variant="default"
                   className={styles.reportButton}
                 >
                   Open
                 </Button>
-               {/** <Button 
+                {/** <Button 
                   size="default" 
                   variant="primary" 
                   className={styles.reportButton}
@@ -256,22 +271,28 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
               <p>Hi! I'm your AI Assistant. How can I help you?</p>
             </div>
           </div>
-          
+
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`${styles.message} ${
-                message.type === 'user' ? styles.userMessage : styles.assistantMessage
-              }`}
+              className={`${styles.message} ${message.type === 'user' ? styles.userMessage : styles.assistantMessage
+                }`}
             >
               {message.type === 'assistant' && (
                 <div className={styles.messageAvatar}>AI</div>
               )}
               <div className={message.type === 'assistant' ? styles.messageBubble : styles.userBubble}>
                 {message.type === 'assistant' ? (
-                  <>
-                    <Typewriter 
-                      text={message.content} 
+                  <div className={styles.messageBubbleContent}>
+                    <IconButton
+                      aria-label="Copy"
+                      className={styles.copyButton}
+                      onClick={() => handleCopy(message.content)}
+                    >
+                      <Icon glyph="Copy" />
+                    </IconButton>
+                    <Typewriter
+                      text={message.content}
                       speed={10}
                       messageId={message.messageId}
                       completedMessages={completedMessages}
@@ -280,7 +301,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                       }}
                     />
                     {message.citations && message.citations.length > 0 && completedMessages[message.messageId] && (
-                      <button 
+                      <button
                         className={styles.citationsButton}
                         onClick={() => {
                           setSelectedCitations(message.citations);
@@ -290,7 +311,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                         📚 View {message.citations.length} source{message.citations.length > 1 ? 's' : ''}
                       </button>
                     )}
-                  </>
+                  </div>
                 ) : (
                   message.content
                 )}
@@ -309,6 +330,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                   <span></span>
                   <span></span>
                 </div>
+                <div className={styles.loadingMessage}>The agent is thinking</div>
               </div>
             </div>
           )}
@@ -317,7 +339,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
 
         {/* Quick Questions Section - positioned above input */}
         <div className={styles.quickQuestionsSection}>
-          <PreCannedQuestions 
+          <PreCannedQuestions
             onQuestionSelect={handlePreCannedQuestion}
             useCase={useCase}
             hasSelectedDocuments={selectedDocuments.length > 0}
@@ -345,8 +367,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
           </Button>
         </form>
       </div>
-      
-      <CitationsModal 
+
+      <CitationsModal
         isOpen={showCitationsModal}
         onClose={() => setShowCitationsModal(false)}
         citations={selectedCitations}

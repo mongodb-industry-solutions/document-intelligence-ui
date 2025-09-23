@@ -9,8 +9,10 @@ import { RefreshCw } from "lucide-react";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useSelection } from "@/contexts/SelectionContext";
 import ProgressIndicator from "@/components/progress/ProgressIndicator";
+import InfoWizard from "@/components/InfoWizard/InfoWizard";
 import Stepper, { Step } from "@leafygreen-ui/stepper";
 import { H1, Body, Subtitle } from "@leafygreen-ui/typography";
+import sourcesTalkTrack from "@/app/lib/sources_talkTrack.js";
 
 const DataSources = ({ onContinue, onBack }) => {
   const router = useRouter();
@@ -21,6 +23,8 @@ const DataSources = ({ onContinue, onBack }) => {
   const [workflow, setWorkflow] = useState(null); // { id, status }
   const [logs, setLogs] = useState([]);
   const [canContinue, setCanContinue] = useState(false);
+  const [openHelpModal, setOpenHelpModal] = useState(false);
+
 
   const dataSources = [
     {
@@ -148,6 +152,7 @@ const DataSources = ({ onContinue, onBack }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+
         <H1 className={styles.title}>
           Set-up your Sources
         </H1>
@@ -172,7 +177,7 @@ const DataSources = ({ onContinue, onBack }) => {
               onClick={() => handleSourceSelect(source.id)}
             >
               <div className={styles.sourceIcon}>
-                <img 
+                <img
                   src={`/` + source.icon}
                   alt={source.title + ' icon'}
                   className={styles.sourceIcon}
@@ -189,7 +194,16 @@ const DataSources = ({ onContinue, onBack }) => {
           <div className={styles.sectionHeader}>
             <div className={styles.sectionHeaderRow}>
               <div className={styles.sectionHeaderText}>
-                <h2 className={styles.examplesTitle}>Sync sources and show progress</h2>
+                <div className={styles.examplesTitleRow}>
+                  <h2 className={styles.examplesTitle}>Sync sources and show progress</h2>
+                  <InfoWizard
+                    open={openHelpModal}
+                    setOpen={setOpenHelpModal}
+                    tooltipText="Tell me more!"
+                    iconGlyph="Wizard"
+                    sections={sourcesTalkTrack}
+                  />
+                </div>
                 <Body>Click on the button and have a look at the progress of your files being ingested in the console.</Body>
               </div>
               <Button
