@@ -81,7 +81,7 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
   return (
     <div className={styles.preCannedContainer}>
       <div className={styles.header}>
-        <MessageCircle size={20} className={styles.headerIcon} />
+        {/*<MessageCircle size={20} className={styles.headerIcon} />*/}
         <h3 className={styles.headerTitle}>Quick Questions</h3>
         <p className={styles.headerSubtitle}>
           {hasSelectedDocuments 

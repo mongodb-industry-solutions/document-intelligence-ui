@@ -2,11 +2,12 @@
 
 import { useSelection } from "@/contexts/SelectionContext";
 import ProgressIndicator from "@/components/progress/ProgressIndicator";
+import Stepper, { Step } from "@leafygreen-ui/stepper";
 import styles from "./AppHeader.module.css";
 
 function AppHeader() {
   const { useCase } = useSelection();
-  
+
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
     return useCase
@@ -18,7 +19,11 @@ function AppHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <ProgressIndicator currentStep={3} />
+        <Stepper currentStep={3} maxDisplayedSteps={3} className={styles.stepper}>
+          <Step>Use Case</Step>
+          <Step>Sources</Step>
+          <Step>Document Intelligence</Step>
+        </Stepper>
         <div className={styles.titleSection}>
         </div>
       </div>

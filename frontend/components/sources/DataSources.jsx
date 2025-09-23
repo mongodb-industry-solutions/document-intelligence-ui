@@ -9,6 +9,8 @@ import { RefreshCw } from "lucide-react";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useSelection } from "@/contexts/SelectionContext";
 import ProgressIndicator from "@/components/progress/ProgressIndicator";
+import Stepper, { Step } from "@leafygreen-ui/stepper";
+import { H1, Body, Subtitle } from "@leafygreen-ui/typography";
 
 const DataSources = ({ onContinue, onBack }) => {
   const router = useRouter();
@@ -24,17 +26,17 @@ const DataSources = ({ onContinue, onBack }) => {
     {
       id: "local",
       title: "Connect with a local drive",
-      icon: "icon/logo"
+      icon: "folder.png"
     },
     {
       id: "s3",
       title: "Connect with S3",
-      icon: "icon/logo"
+      icon: "s3.svg"
     },
     {
       id: "google-drive",
       title: "Connect with Google Drive",
-      icon: "icon/logo"
+      icon: "drive.png"
     }
   ];
 
@@ -146,11 +148,18 @@ const DataSources = ({ onContinue, onBack }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>
+        <H1 className={styles.title}>
           Set-up your Sources
-        </h1>
-        
-        <ProgressIndicator currentStep={2} />
+        </H1>
+
+        <Body>From the options below choose the sources you would like to sync to retrieve your documents.</Body>
+
+        <Stepper currentStep={2} maxDisplayedSteps={3} className={styles.stepper}>
+          <Step>Use Case</Step>
+          <Step>Sources</Step>
+          <Step>Document Intelligence</Step>
+        </Stepper>
+
       </div>
 
       <div className={styles.sourcesSection}>
@@ -163,7 +172,11 @@ const DataSources = ({ onContinue, onBack }) => {
               onClick={() => handleSourceSelect(source.id)}
             >
               <div className={styles.sourceIcon}>
-                {source.icon}
+                <img 
+                  src={`/` + source.icon}
+                  alt={source.title + ' icon'}
+                  className={styles.sourceIcon}
+                />
               </div>
               <span className={styles.sourceTitle}>{source.title}</span>
             </div>
@@ -171,40 +184,37 @@ const DataSources = ({ onContinue, onBack }) => {
         </div>
       </div>
 
-      <div className={styles.examplesSection}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 className={styles.examplesTitle}>Sync sources and show progress</h2>
-          <Button
-            size="large"
-            leftGlyph={<RefreshCw size={16} />}
-            onClick={handleSyncSources}
-            disabled={!sourcesSelected || isSyncing}
-          >
-            {isSyncing ? 'Syncing…' : 'Sync Sources'}
-          </Button>
-        </div>
+      {sourcesSelected && (
+        <div className={styles.examplesSection}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionHeaderRow}>
+              <div className={styles.sectionHeaderText}>
+                <h2 className={styles.examplesTitle}>Sync sources and show progress</h2>
+                <Body>Click on the button and have a look at the progress of your files being ingested in the console.</Body>
+              </div>
+              <Button
+                size="large"
+                leftGlyph={<RefreshCw size={16} />}
+                onClick={handleSyncSources}
+                disabled={!sourcesSelected || isSyncing}
+              >
+                {isSyncing ? 'Syncing…' : 'Sync Sources'}
+              </Button>
+            </div>
+          </div>
 
-        <div style={{
-          background: '#0b1220',
-          color: '#e6edf3',
-          borderRadius: 8,
-          padding: 12,
-          height: 280,
-          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-          fontSize: 12,
-          overflowY: 'auto',
-          border: '1px solid #1f2a44'
-        }} aria-live="polite" role="log">
-          {logs.length === 0 ? (
-            <div style={{ opacity: 0.75 }}>Select at least one source, then click "Sync Sources" to start ingestion.</div>
-          ) : (
-            logs.map((line, idx) => (<div key={idx}>{line}</div>))
-          )}
+          <div className={styles.logConsole} aria-live="polite" role="log">
+            {logs.length === 0 ? (
+              <div className={styles.logConsoleHint}>Select at least one source, then click "Sync Sources" to start ingestion.</div>
+            ) : (
+              logs.map((line, idx) => (<div key={idx}>{line}</div>))
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={styles.footer}>
-        <Button 
+        <Button
           variant="default"
           size="large"
           onClick={handleBack}
@@ -212,12 +222,12 @@ const DataSources = ({ onContinue, onBack }) => {
         >
           Go Back
         </Button>
-        
-        <Button 
+
+        <Button
           variant={canContinue ? "primary" : "default"}
           size="large"
           onClick={handleContinue}
-          disabled={!canContinue}
+          disabled={!canContinue || isSyncing}
           className={styles.continueButton}
         >
           Continue
