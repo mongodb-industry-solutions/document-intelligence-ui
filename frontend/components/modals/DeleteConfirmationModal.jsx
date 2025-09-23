@@ -11,6 +11,8 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, documentName }) =
     <Modal 
       open={isOpen} 
       setOpen={onClose}
+            className={styles.modal}
+
     >
       <div className={styles.modalContent}>
         <div className={styles.iconContainer}>

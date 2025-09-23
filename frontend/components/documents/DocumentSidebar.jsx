@@ -126,12 +126,12 @@ const DocumentSidebar = ({
     <>
       <div className={styles.sidebar}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Documents</h2>
+          <h2 className={styles.title}>Available Documents</h2>
           <div className={styles.headerActions}>
             
             <Button
               size="default"
-              leftGlyph={<Upload size={16} />}
+              leftGlyph={<Upload size={16} color="black"/>}
               onClick={() => setShowUploadModal(true)}
               variant="primary"
               className={styles.addButton}
@@ -142,7 +142,7 @@ const DocumentSidebar = ({
         </div>
 
         <p className={styles.subtitle}>
-          Find below the documents available for interaction.
+          Select the documents you want to use to interact with the assistant.
         </p>
 
         {loading && (

@@ -183,20 +183,19 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.titleSection}>
-          <h2 className={styles.title}>Document Assistant</h2>
-          <p className={styles.subtitle}>For {formatUseCase(useCase)}</p>
+          <div className={styles.titleSectionRow}>
+            <img src="/coachGTM_Headshot.png" alt="Coach Headshot" className={styles.titleSectionImage} />
+            <div>
+              <h2 className={styles.title}>Document Assistant</h2>
+              <p className={styles.subtitle}>
+                <span className={styles.pulseCircle}></span>
+                Available for {formatUseCase(useCase)}
+              </p>
+            </div>
+          </div>
         </div>
         <div className={styles.headerActions}>
-          {messages.length > 0 && (
-            <Button
-              variant="default"
-              size="small"
-              onClick={handleStartNewChat}
-              className={styles.newChatButton}
-            >
-              🆕 Start New Chat
-            </Button>
-          )}
+          
           {selectedDocuments.length > 0 && (
             <div className={styles.selectionStatus}>
               <span className={styles.statusIcon}>📄</span>
@@ -204,6 +203,16 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 {selectedDocuments.length} document{selectedDocuments.length > 1 ? 's' : ''} selected
               </span>
             </div>
+          )}
+
+          {messages.length > 0 && (
+            <Button
+              variant="default"
+              onClick={handleStartNewChat}
+              className={styles.newChatButton}
+            >
+               Start New Chat
+            </Button>
           )}
         </div>
       </div>
@@ -228,13 +237,13 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 >
                   Open
                 </Button>
-                <Button 
+               {/** <Button 
                   size="default" 
                   variant="primary" 
                   className={styles.reportButton}
                 >
                   Download
-                </Button>
+                </Button> */}
               </div>
             </div>
           </Card>
