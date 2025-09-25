@@ -12,7 +12,7 @@ import ProgressIndicator from "@/components/progress/ProgressIndicator";
 import InfoWizard from "@/components/InfoWizard/InfoWizard";
 import Stepper, { Step } from "@leafygreen-ui/stepper";
 import { H1, Body, Subtitle } from "@leafygreen-ui/typography";
-import sourcesTalkTrack from "@/app/sources/sources_talkTrack.js";
+import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
 
 const DataSources = ({ onContinue, onBack }) => {
   const router = useRouter();
