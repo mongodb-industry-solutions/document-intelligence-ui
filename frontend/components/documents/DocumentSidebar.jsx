@@ -10,15 +10,15 @@ import styles from "./DocumentSidebar.module.css";
 import UploadModal from "@/components/modals/UploadModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
 
-const DocumentSidebar = ({ 
-  documents, 
-  selectedDocuments, 
-  onDocumentToggle, 
-  onRefresh, 
-  loading, 
+const DocumentSidebar = ({
+  documents,
+  selectedDocuments,
+  onDocumentToggle,
+  onRefresh,
+  loading,
   error,
   useCase,
-  onDocumentDeleted 
+  onDocumentDeleted
 }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -81,7 +81,7 @@ const DocumentSidebar = ({
           setShowDeleteModal(false);
           const deletedDocName = documentToDelete.document_name;
           setDocumentToDelete(null);
-          
+
           // Show success toast
           pushToast({
             variant: 'success',
@@ -90,7 +90,7 @@ const DocumentSidebar = ({
             dismissible: true,
             progress: 1,
           });
-          
+
           // Call the parent callback to refresh the document list
           if (onDocumentDeleted) {
             onDocumentDeleted(documentToDelete.document_id);
@@ -126,24 +126,28 @@ const DocumentSidebar = ({
     <>
       <div className={styles.sidebar}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Available Documents</h2>
-          <div className={styles.headerActions}>
-            
-            <Button
-              size="default"
-              leftGlyph={<Upload size={16} color="black"/>}
-              onClick={() => setShowUploadModal(true)}
-              variant="primary"
-              className={styles.addButton}
-            >
-              Add a local file
-            </Button>
+          <div className={styles.headerRow}>
+            <div className={styles.headerText}>
+              <h2 className={styles.title}>Available Documents</h2>
+              <p className={styles.subtitle}>
+                Select the documents you want to use to interact with the assistant.
+              </p>
+            </div>
+            <div className={styles.headerActions}>
+              <Button
+                size="default"
+                leftGlyph={<Upload size={16} color="black" />}
+                onClick={() => setShowUploadModal(true)}
+                variant="primary"
+                className={styles.addButton}
+              >
+                Add a local file
+              </Button>
+            </div>
           </div>
         </div>
 
-        <p className={styles.subtitle}>
-          Select the documents you want to use to interact with the assistant.
-        </p>
+
 
         {loading && (
           <div className={styles.loading}>
@@ -206,6 +210,7 @@ const DocumentSidebar = ({
                     </span>
                   </div>
                 </div>
+                {/**
                 <button
                   className={styles.deleteButton}
                   onClick={() => handleDeleteClick(doc)}
@@ -214,6 +219,7 @@ const DocumentSidebar = ({
                 >
                   <X size={16} />
                 </button>
+                 */}
               </div>
             ))}
           </div>
