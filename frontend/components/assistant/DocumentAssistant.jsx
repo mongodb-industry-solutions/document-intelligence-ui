@@ -7,6 +7,7 @@ import Card from "@leafygreen-ui/card";
 import { FileText } from "lucide-react";
 import Typewriter from "@/components/common/Typewriter";
 import CitationsModal from "@/components/modals/CitationsModal";
+import ReportModal from "@/components/modals/ReportModal";
 import PreCannedQuestions from "./PreCannedQuestions";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import styles from "./DocumentAssistant.module.css";
@@ -24,6 +25,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [showCitationsModal, setShowCitationsModal] = useState(false);
   const [selectedCitations, setSelectedCitations] = useState([]);
   const [workflowSteps, setWorkflowSteps] = useState([]);
+  const [showReportModal, setShowReportModal] = useState(false);
   const messagesEndRef = useRef(null);
 
   const formatUseCase = (useCase) => {
@@ -249,6 +251,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                   size="default"
                   variant="default"
                   className={styles.reportButton}
+                  onClick={() => setShowReportModal(true)}
                 >
                   Open
                 </Button>
@@ -372,6 +375,13 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         isOpen={showCitationsModal}
         onClose={() => setShowCitationsModal(false)}
         citations={selectedCitations}
+      />
+
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        industry="fsi"
+        useCase={useCase}
       />
     </div>
   );
