@@ -146,15 +146,9 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                 </p>
               </div>
             </div>
-            <Button
-              variant="default"
-              size="small"
-              leftGlyph={<X size={16} />}
-              onClick={onClose}
-              className={styles.closeButton}
-            >
-              Close
-            </Button>
+
+            <button className={styles.closeButton} onClick={onClose}>×</button>
+            
           </div>
         </div>
 

@@ -8,10 +8,9 @@ import Card from "@leafygreen-ui/card";
 import { RefreshCw } from "lucide-react";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useSelection } from "@/contexts/SelectionContext";
-import ProgressIndicator from "@/components/progress/ProgressIndicator";
-import InfoWizard from "@/components/InfoWizard/InfoWizard";
 import Stepper, { Step } from "@leafygreen-ui/stepper";
 import { H1, Body, Subtitle } from "@leafygreen-ui/typography";
+import InfoWizard from "@/components/InfoWizard/InfoWizard";
 import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
 
 const DataSources = ({ onContinue, onBack }) => {
@@ -202,6 +201,7 @@ const DataSources = ({ onContinue, onBack }) => {
                     tooltipText="Tell me more!"
                     iconGlyph="Wizard"
                     sections={sourcesTalkTrack}
+                    openModalIsButton={false}
                   />
                 </div>
                 <Body>Click on the button and have a look at the progress of your files being ingested in the console.</Body>

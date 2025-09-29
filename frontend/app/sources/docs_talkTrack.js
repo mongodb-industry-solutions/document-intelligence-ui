@@ -1,4 +1,4 @@
-export const sourceTalkTrack = [
+export const docTalkTrack = [
     {
         heading: "Instructions and Talk Track",
         content: [

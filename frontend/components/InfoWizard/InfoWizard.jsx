@@ -25,12 +25,8 @@ const InfoWizard = ({
     <>
       {
         openModalIsButton
-          /* Bigger button for navbars */
-          ? <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />}>
-            {tooltipText}
-          </Button>
           /* Small icon button */
-          : <Tooltip
+          ? <Tooltip
             trigger={
               <IconButton aria-label="Info" onClick={() => setOpen((prev) => !prev)}>
                 <Icon glyph={iconGlyph} />
@@ -39,6 +35,10 @@ const InfoWizard = ({
           >
             {tooltipText}
           </Tooltip>
+          /* Bigger button for navbars */
+          : <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />}>
+            {tooltipText}
+          </Button>
       }
 
       {/* Updated Modal without the ref prop */}
@@ -48,7 +48,7 @@ const InfoWizard = ({
         className={styles.modal} // Removed the `ref` prop
       >
         <div className={styles.modalContent}>
-          <Tabs aria-label="info wizard tabs" onSelect={setSelected} selected={selected}>
+          <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
             {sections.map((tab, tabIndex) => (
               <Tab key={tabIndex} name={tab.heading}>
                 {tab.content.map((section, sectionIndex) => (
@@ -56,13 +56,13 @@ const InfoWizard = ({
                     {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
                     {
                       section.body && section.isHTML === true
-                        ? <div className={styles.htmlRender}  dangerouslySetInnerHTML={{ __html: section.body }}></div>
+                        ? <div className={styles.htmlRender} dangerouslySetInnerHTML={{ __html: section.body }}></div>
                         : section.body && Array.isArray(section.body)
                           ? <ul className={styles.list}>
                             {
                               section.body.map((item, idx) => (
                                 typeof (item) == 'object'
-                                  ? <li key={idx}>
+                                  ? <li>
                                     {item.heading}
                                     <ul className={styles.list}>
                                       {

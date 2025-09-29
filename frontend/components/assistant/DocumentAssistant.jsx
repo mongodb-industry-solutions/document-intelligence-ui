@@ -13,6 +13,8 @@ import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import styles from "./DocumentAssistant.module.css";
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
+import InfoWizard from "@/components/InfoWizard/InfoWizard";
+import { assistantTalkTrack as assistantsTalkTrack } from "@/app/sources/assitants_talkTrack.js";
 
 // Use environment variable for backend URL with fallback
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
@@ -27,6 +29,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [workflowSteps, setWorkflowSteps] = useState([]);
   const [showReportModal, setShowReportModal] = useState(false);
   const messagesEndRef = useRef(null);
+  const [openHelpModal, setOpenHelpModal] = useState(false);
+
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
@@ -51,15 +55,15 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   };
 
   //Copy answers
-    const handleCopy = (text) => {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          console.log("Copied to clipboard:", text);
-        })
-        .catch((err) => {
-          console.error("Failed to copy: ", err);
-        });
-    };
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        console.log("Copied to clipboard:", text);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
 
   const handlePreCannedQuestion = (question) => {
     if (question.id === "capabilities") {
@@ -192,7 +196,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       setLoading(false);
     }
 
-    
+
   };
 
 
@@ -203,7 +207,17 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
           <div className={styles.titleSectionRow}>
             <img src="/coachGTM_Headshot.png" alt="Coach Headshot" className={styles.titleSectionImage} />
             <div>
-              <h2 className={styles.title}>Document Assistant</h2>
+              <div className={styles.titleWizard}>
+                <h2 className={styles.title}>Document Assistant</h2>
+                <InfoWizard
+                  open={openHelpModal}
+                  setOpen={setOpenHelpModal}
+                  tooltipText="Tell me more!"
+                  iconGlyph="Wizard"
+                  sections={assistantsTalkTrack}
+                  openModalIsButton={true}
+                />
+              </div>
               <p className={styles.subtitle}>
                 <span className={styles.pulseCircle}></span>
                 Available for {formatUseCase(useCase)}
@@ -268,6 +282,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         </div>
 
         <div className={`${styles.messagesContainer} ${messages.length > 0 ? styles.hasMessages : ''}`}>
+
           <div className={`${styles.assistantMessage} ${styles.welcome}`}>
             <div className={styles.messageAvatar}>AI</div>
             <div className={`${styles.messageBubble} ${styles.welcomeBubble}`}>
@@ -304,7 +319,10 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                       }}
                     />
                     {message.citations && message.citations.length > 0 && completedMessages[message.messageId] && (
-                      <button
+
+                      <Button
+                        size="default"
+                        variant="default"
                         className={styles.citationsButton}
                         onClick={() => {
                           setSelectedCitations(message.citations);
@@ -312,7 +330,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                         }}
                       >
                         📚 View {message.citations.length} source{message.citations.length > 1 ? 's' : ''}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 ) : (
