@@ -17,6 +17,7 @@
   align-items: center;
   gap: 12px;
 }
+
 .sidebar {
   width: 600px;
   background-color: #FFFFFF;
@@ -39,6 +40,11 @@
   font-weight: 600;
   color: #001E2B;
   margin: 0;
+}
+
+.titleWizard {
+  display: flex;
+  gap: 10px;
 }
 
 .headerActions {

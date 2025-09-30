@@ -10,6 +10,7 @@ import DocumentSidebar from "@/components/documents/DocumentSidebar";
 import DocumentAssistant from "@/components/assistant/DocumentAssistant";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 
+
 export default function DocumentIntelligencePage() {
   const router = useRouter();
   const { useCase, sources, isSelectionComplete, isLoading } = useSelection();
@@ -75,6 +76,8 @@ export default function DocumentIntelligencePage() {
   if (isLoading || !isSelectionComplete()) {
     return null;
   }
+
+
 
   return (
     <ToastProvider>

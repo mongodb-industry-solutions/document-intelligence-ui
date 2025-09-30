@@ -9,6 +9,8 @@ import { RefreshCw, Upload, X } from "lucide-react";
 import styles from "./DocumentSidebar.module.css";
 import UploadModal from "@/components/modals/UploadModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
+import InfoWizard from "@/components/InfoWizard/InfoWizard";
+import { docTalkTrack as docsTalkTrack } from "@/app/sources/docs_talkTrack.js";
 
 const DocumentSidebar = ({
   documents,
@@ -24,6 +26,7 @@ const DocumentSidebar = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
   const { pushToast } = useToast();
+  const [openHelpModal, setOpenHelpModal] = useState(false);
 
   const formatFileSize = (sizeInMB) => {
     if (sizeInMB < 1) {
@@ -122,13 +125,26 @@ const DocumentSidebar = ({
     setDocumentToDelete(null);
   };
 
+      console.log("doc" + docsTalkTrack); // <-- Add here
+
+
   return (
     <>
       <div className={styles.sidebar}>
         <div className={styles.header}>
           <div className={styles.headerRow}>
             <div className={styles.headerText}>
-              <h2 className={styles.title}>Available Documents</h2>
+              <div className={styles.titleWizard}>
+                <h2 className={styles.title}>Available Documents</h2>
+                <InfoWizard
+                  open={openHelpModal}
+                  setOpen={setOpenHelpModal}
+                  tooltipText="Tell me more!"
+                  iconGlyph="Wizard"
+                  sections={docsTalkTrack}
+                  openModalIsButton={true}
+                />
+              </div>
               <p className={styles.subtitle}>
                 Select the documents you want to use to interact with the assistant.
               </p>

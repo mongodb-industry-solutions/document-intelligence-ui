@@ -1,8 +1,8 @@
 .examplesTitleRow {
-  /*display: flex;*/
   align-items: center;
   gap: 12px;
 }
+
 .examplesSection {
   margin-top: 32px;
 }
@@ -78,7 +78,7 @@
   border: 2px dashed #C1C7C6;
   border-radius: 12px;
   padding: 48px;
-  margin-bottom: 20px;
+
   position: relative;
 }
 
@@ -189,6 +189,7 @@
   font-size: 12px;
   overflow-y: auto;
   border: 1px solid #1f2a44;
+  overflow: scroll;
 }
 .backButton {
   background-color: #FFFFFF !important;
