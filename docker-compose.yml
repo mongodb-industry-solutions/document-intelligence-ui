@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile.frontend
     image: document-intelligence-image-frontend:latest
     ports:
-      - "3000:3000"
+      - "8080:8080"
     restart: always
     container_name: document-intelligence-frontend
