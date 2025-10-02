@@ -23,6 +23,11 @@
   max-height: 90vh;
   height: 500px; /* Set a fixed height */
   min-height: 500px; /* Prevent shrinking */
+ 
+}
+
+.tabsContent{
+ margin-right: 30px;
 }
 
 .modalH3 {
@@ -61,6 +66,7 @@
   background-color: rgb(216, 214, 214);
   color: black;
 }
+
 
 
 

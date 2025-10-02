@@ -164,11 +164,12 @@ const DataSources = ({ onContinue, onBack }) => {
           <Step>Document Intelligence</Step>
         </Stepper>
 
+
       </div>
 
       <div className={styles.sourcesSection}>
-        
-        <InfoWizard
+       
+       {/** <InfoWizard
           open={openHelpModal}
           setOpen={setOpenHelpModal}
           tooltipText="Tell me more!"
@@ -176,6 +177,7 @@ const DataSources = ({ onContinue, onBack }) => {
           sections={sourcesTalkTrack}
           openModalIsButton={false}
         />
+         */}
 
         <p className={styles.sourcesHint}>You can select multiple sources</p>
         <div className={styles.sourcesGrid}>
@@ -202,6 +204,8 @@ const DataSources = ({ onContinue, onBack }) => {
 
       {sourcesSelected && (
         <div className={styles.examplesSection}>
+           
+       
           <div className={styles.sectionHeader}>
             <div className={styles.sectionHeaderRow}>
               <div className={styles.sectionHeaderText}>
