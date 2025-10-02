@@ -1,0 +1,62 @@
+---
+kind: pipeline
+type: kubernetes
+name: staging
+
+trigger:
+  branch:
+    - staging
+  paths:
+    exclude:
+      - README.md
+      - THIRD-PARTY-NOTICES.md
+      - .gitignore
+      - EXAMPLE.env
+      - LICENSE
+
+steps:
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/document-intelligence-ui
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      dockerfile: Dockerfile.frontend
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-frontend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: fnv-frontend
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/document-intelligence-ui"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=document-intelligence-ui.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "env.NEXT_PUBLIC_API_URL=https://document-intelligence.industrysolutions.staging.corp.mongodb.com"
+        - "serviceAccount.enabled=false"
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+      values_files: [ "environment/staging-frontend.yaml" ]
+    when:
+      event:
+        - push
