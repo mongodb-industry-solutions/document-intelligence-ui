@@ -3,19 +3,21 @@ export const sourceTalkTrack = [
         heading: "Instructions and Talk Track",
         content: [
             {
-                heading: "What is Open Finance?",
-                body: "Open Finance refers to the concept of allowing customers to securely share their financial data with third parties, beyond traditional banking services, to enable a broader range of financial products and services. It builds upon the principles of Open Banking, which focuses primarily on bank accounts, but extends the scope to include other financial products such as investments, insurance, pensions, and loans.",
-            },
-          
-            {
-                heading: "How to Demo (option 2)",
+                heading: "What is hierarchical multi-agent orchestration?",
                 body: [
-                    "Click on the “Connect Bank” button",
-                    "Select a fictional bank you would like to connect from the dropdown",
-                    "Allow the modal to go through the different steps",
-                    "Once the connection is completed you should see the new accounts or products displayed alongside your Leafy Bank accounts, with a blue badge indicating the name of the new bank.",
-                    "Your “Global Position” will also be updated accordingly following these changes.",
-                    "If you wish to remove a specific account/product from your list, click on the disconnect icon on the card. This card will disappear from your view, and the amount will be discounted from the global position totals."
+                    "Hierarchical multi-agent orchestration (often also called supervisor or “supervisor of supervisors”) is an architecture for coordinating multiple agents in a system. Rather than having a flat network of agents that all coordinate directly, you impose a hierarchy: teams of agents report to local supervisors, and those supervisors in turn report to a top-level supervisor. This lets you scale complexity, partition responsibilities, and delegate control flow in a more manageable way.",
+                    "",
+                    "In the context of document ingestion and relevance determination, hierarchical orchestration lets you route documents (or document chunks) through specialized agents (e.g. for parsing, summarization, classification), under the oversight of supervisors that can decide which agent(s) to invoke next and which documents are relevant.",
+                ],
+            },
+
+            {
+                heading: "How to Demo",
+                body: [
+                    "- Select a source from the ones available below",
+                    "- Click the “Sync sources”",
+                    "- Check the console to see the ingestion process in action",
+                    "- Once the ingestion is complete, click continue",
                 ],
             },
         ],
@@ -29,7 +31,7 @@ export const sourceTalkTrack = [
             },
             {
                 image: {
-                    src: "./OF_info.png",
+                    src: "./sources.png",
                     alt: "Architecture",
                 },
             },
@@ -39,28 +41,21 @@ export const sourceTalkTrack = [
         heading: "Why MongoDB?",
         content: [
             {
-                heading: "Flexible Data Model",
-                body: `<div>MongoDB's <a href="https://www.mongodb.com/resources/basics/databases/document-databases" target="_blank">document-oriented architecture</a> allows you to store varied data 
-                (such as <i>timeseries logs, agent profiles, and recommendation outputs</i>) 
-                in a <strong>single unified format</strong>. This flexibility means you don’t have to redesign your database <mark>schema</mark> every time your data requirements evolve.</div>`,
-                isHTML:true
+                heading: "Flexible Schema & Document Model",
+                body: `MongoDB’s document-based storage lets you naturally represent documents, chunks, metadata, agent states, and routing decisions in nested JSON-like structures. You can evolve the schema over time (e.g. add new fields for supervisor decisions, agent annotations) without rigid migrations.
+<br><br>On top of this, MongoDB also stores vector representations (embeddings) directly alongside your data, making it an all-in-one database for both structured and semantic queries. With Atlas Vector Search, you can run semantic search over your ingested content, improving retrieval relevance and context awareness.
+<br><br>We are leveraging the recently released Voyage-3-Context model, which generates embeddings that combine focused chunk-level details with global document context. This results in higher-quality matches and more accurate downstream responses.`,
+                isHTML: true
             },
             {
-                heading: "Scalability and Performance",
-                body: "MongoDB is designed to scale horizontally, making it capable of handling large volumes of real-time data. This is essential when multiple data sources send timeseries data simultaneously, ensuring high performance under heavy load.",
+                heading: "Efficient Querying & Indexing",
+                body: "You can index on document attributes (e.g. relevance score, ingestion status, metadata) and do fast lookups and filtering. Supervisors and agents can quickly query which documents are pending, which need reprocessing, or which passed relevance thresholds. The system is also smart enough to detect documents that have already been processed, ensuring they aren’t reprocessed unnecessarily, saving both time and compute.",
             },
             {
-                heading: "Real-Time Analytics",
-                body: "With powerful aggregation frameworks and change streams, MongoDB supports real-time data analysis and anomaly detection. This enables the system to process incoming timeseries data on the fly and quickly surface critical insights.",
+                heading: "Scalability & Distributed Architecture",
+                body: "MongoDB scales horizontally and supports high throughput. In a multi-agent system with many concurrent agents ingesting, updating, and routing documents, you need a database that can handle high write and read loads reliably.",
             },
-            {
-                heading: "Seamless Integration",
-                body: "MongoDB is seamlessly integrated with LangGraph, making it a powerful memory provider.",
-            },
-            {
-                heading: "Vector Search",
-                body: "MongoDB Atlas supports native vector search, enabling fast and efficient similarity searches on embedding vectors. This is critical for matching current queries with historical data, thereby enhancing diagnostic accuracy and providing more relevant recommendations.",
-            },
+            
         ],
     },
 ]

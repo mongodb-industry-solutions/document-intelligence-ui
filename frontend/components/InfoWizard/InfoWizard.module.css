@@ -62,6 +62,8 @@
   color: black;
 }
 
+
+
 @media (max-width: 768px) {
   .modal {
     width: 95vw;
