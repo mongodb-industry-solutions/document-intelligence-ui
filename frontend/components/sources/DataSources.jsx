@@ -164,9 +164,21 @@ const DataSources = ({ onContinue, onBack }) => {
           <Step>Document Intelligence</Step>
         </Stepper>
 
+
       </div>
 
       <div className={styles.sourcesSection}>
+       
+       {/** <InfoWizard
+          open={openHelpModal}
+          setOpen={setOpenHelpModal}
+          tooltipText="Tell me more!"
+          iconGlyph="Wizard"
+          sections={sourcesTalkTrack}
+          openModalIsButton={false}
+        />
+         */}
+
         <p className={styles.sourcesHint}>You can select multiple sources</p>
         <div className={styles.sourcesGrid}>
           {dataSources.map((source) => (
@@ -188,21 +200,18 @@ const DataSources = ({ onContinue, onBack }) => {
         </div>
       </div>
 
+
+
       {sourcesSelected && (
         <div className={styles.examplesSection}>
+           
+       
           <div className={styles.sectionHeader}>
             <div className={styles.sectionHeaderRow}>
               <div className={styles.sectionHeaderText}>
                 <div className={styles.examplesTitleRow}>
                   <h2 className={styles.examplesTitle}>Sync sources and show progress</h2>
-                  <InfoWizard
-                    open={openHelpModal}
-                    setOpen={setOpenHelpModal}
-                    tooltipText="Tell me more!"
-                    iconGlyph="Wizard"
-                    sections={sourcesTalkTrack}
-                    openModalIsButton={false}
-                  />
+
                 </div>
                 <Body>Click on the button and have a look at the progress of your files being ingested in the console.</Body>
               </div>

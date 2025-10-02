@@ -14,7 +14,11 @@ import styles from "./DocumentAssistant.module.css";
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
 import InfoWizard from "@/components/InfoWizard/InfoWizard";
-import { assistantTalkTrack as assistantsTalkTrack } from "@/app/sources/assitants_talkTrack.js";
+
+import { assistantTalkTrack as assistantsTalkTrack } from "../../app/sources/assistants_talkTrack.js";
+import { docTalkTrack as docsTalkTrack } from "@/app/sources/docs_talkTrack.js";
+import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
+
 
 // Use environment variable for backend URL with fallback
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
@@ -29,8 +33,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [workflowSteps, setWorkflowSteps] = useState([]);
   const [showReportModal, setShowReportModal] = useState(false);
   const messagesEndRef = useRef(null);
-  const [openHelpModal, setOpenHelpModal] = useState(false);
-
+  const [openAssistantHelpModal, setOpenAssistantHelpModal] = useState(false);
+  const [openDocsHelpModal, setOpenDocsHelpModal] = useState(false);
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
@@ -196,6 +200,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       setLoading(false);
     }
 
+    console.log(sections)
 
   };
 
@@ -210,8 +215,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
               <div className={styles.titleWizard}>
                 <h2 className={styles.title}>Document Assistant</h2>
                 <InfoWizard
-                  open={openHelpModal}
-                  setOpen={setOpenHelpModal}
+                  open={openAssistantHelpModal}
+                  setOpen={setOpenAssistantHelpModal}
                   tooltipText="Tell me more!"
                   iconGlyph="Wizard"
                   sections={assistantsTalkTrack}
@@ -260,6 +265,16 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <h4 className={styles.reportTitle}>Scheduled Report #1</h4>
                 <p className={styles.reportDescription}>Description</p>
               </div>
+
+              <InfoWizard
+                open={openDocsHelpModal}
+                setOpen={setOpenDocsHelpModal}
+                tooltipText="Tell me more!"
+                iconGlyph="Wizard"
+                sections={docsTalkTrack}
+                openModalIsButton={false}
+              />
+
               <div className={styles.reportActions}>
                 <Button
                   size="default"

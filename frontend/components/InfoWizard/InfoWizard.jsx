@@ -48,9 +48,10 @@ const InfoWizard = ({
         className={styles.modal} // Removed the `ref` prop
       >
         <div className={styles.modalContent}>
-          <Tabs aria-label="info wizard tabs" selected={selected} onChange={(newSelected) => setSelected(newSelected)}>
+          
+          <Tabs aria-label="info wizard tabs" selected={selected} onChange={(newSelected) => setSelected(newSelected)} className={styles.tabsContent}>
             {sections.map((tab, tabIndex) => (
-              <Tab key={tabIndex} name={tab.heading}>
+              <Tab key={tabIndex} name={tab.heading} className={styles.tabsHeader}>
                 {tab.content.map((section, sectionIndex) => (
                   <div key={sectionIndex} className={styles.section}>
                     {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
