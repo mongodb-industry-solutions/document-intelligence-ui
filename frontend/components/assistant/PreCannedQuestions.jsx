@@ -19,10 +19,10 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
         category: "general"
       },
       {
-        id: "summarize",
-        question: "Summarize the key points from selected documents",
+        id: "about",
+        question: "What are these documents about?",
         icon: FileText,
-        description: "Get a comprehensive summary of your selected documents",
+        description: "Get a sense of what the documents contain",
         category: "analysis"
       },
       {
