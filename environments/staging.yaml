@@ -1,9 +1,9 @@
 env:
   NODE_ENV: staging
   # Use internal k8s service - bypasses authentication
-  INTERNAL_API_URL: http://document-intelligence-web-app:80
+  # INTERNAL_API_URL: http://document-intelligence-web-app:80
   # Keep external URL as fallback (though it won't be used due to auth issues)
-  NEXT_PUBLIC_API_URL: https://document-intelligence.industrysolutions.staging.corp.mongodb.com
+  NEXT_PUBLIC_API_URL: http://document-intelligence-web-app:80
 
 # No service account needed for frontend
 serviceAccount:
