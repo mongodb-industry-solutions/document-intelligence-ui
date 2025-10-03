@@ -26,7 +26,7 @@ steps:
         - latest
       dockerfile: Dockerfile.frontend
       build_args:
-        - NEXT_PUBLIC_INTERNAL_API_URL=http://document-intelligence-web-app:80
+        - INTERNAL_API_URL=http://document-intelligence-web-app:80
         - NEXT_PUBLIC_API_URL=https://document-intelligence.industrysolutions.staging.corp.mongodb.com
       access_key:
         from_secret: ecr_access_key
