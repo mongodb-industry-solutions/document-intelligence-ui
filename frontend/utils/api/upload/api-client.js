@@ -1,5 +1,7 @@
 // Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.INTERNAL_API_URL || 
+                    process.env.NEXT_PUBLIC_API_URL || 
+                    "http://localhost:8080";
 
 /**
  * Upload API client for document upload functionality
