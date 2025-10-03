@@ -6,9 +6,8 @@ services:
       dockerfile: Dockerfile.frontend
     image: document-intelligence-image-frontend:latest
     ports:
-      - "3000:8000"
+      - "3000:3000"
     environment:
-      - INTERNAL_API_URL=http://document-intelligence-web-app:80  # Container-to-container URL (primary)
       - NEXT_PUBLIC_API_URL=http://localhost:8000  # Fallback for local development
       - NODE_ENV=development
     restart: always

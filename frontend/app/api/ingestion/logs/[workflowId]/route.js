@@ -8,9 +8,7 @@ export async function GET(request, { params }) {
   const { searchParams } = new URL(request.url);
   const limit = searchParams.get('limit') || '200';
   
-  const backendUrl = process.env.INTERNAL_API_URL || 
-                     process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(`${backendUrl}/api/ingestion/logs/${workflowId}?limit=${limit}`, {

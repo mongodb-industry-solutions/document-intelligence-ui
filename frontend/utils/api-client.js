@@ -1,9 +1,7 @@
 // Client-side API service for document intelligence operations
 
 // Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.INTERNAL_API_URL || 
-                    process.env.NEXT_PUBLIC_API_URL || 
-                    "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const documentService = {
   // Upload PDF document

@@ -6,9 +6,7 @@
 export async function GET(request, { params }) {
   const { documentId } = await params;
   
-  const backendUrl = process.env.INTERNAL_API_URL || 
-                     process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(`${backendUrl}/api/documents/${documentId}`, {
@@ -37,9 +35,7 @@ export async function GET(request, { params }) {
 export async function DELETE(request, { params }) {
   const { documentId } = await params;
   
-  const backendUrl = process.env.INTERNAL_API_URL || 
-                     process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(`${backendUrl}/api/documents/${documentId}`, {

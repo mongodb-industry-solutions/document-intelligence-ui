@@ -4,9 +4,7 @@
  */
 
 export async function GET(request) {
-  const backendUrl = process.env.INTERNAL_API_URL || 
-                     process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const response = await fetch(`${backendUrl}/api/upload/storage-info`, {

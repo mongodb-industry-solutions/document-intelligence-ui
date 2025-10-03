@@ -6,9 +6,7 @@
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   
-  const backendUrl = process.env.INTERNAL_API_URL || 
-                     process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8000";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL;
 
   try {
     const queryString = searchParams.toString();
