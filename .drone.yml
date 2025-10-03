@@ -47,7 +47,6 @@ steps:
         - "ingress.enabled=true"
         - "ingress.hosts[0]=document-intelligence-ui.industrysolutions.staging.corp.mongodb.com"
         - "mesh.enabled=true"
-        - "env.NEXT_PUBLIC_API_URL=https://document-intelligence.industrysolutions.staging.corp.mongodb.com"
         - "serviceAccount.enabled=false"
         - "resources.limits.cpu=1000m"
         - "resources.limits.memory=1024Mi"
