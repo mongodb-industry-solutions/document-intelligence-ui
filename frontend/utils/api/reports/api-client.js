@@ -1,7 +1,7 @@
 // Reports API client for scheduled reports operations
 
 // Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.INTERNAL_API_URL || 
+const API_BASE_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL || 
                     process.env.NEXT_PUBLIC_API_URL || 
                     "http://localhost:8080";
 
