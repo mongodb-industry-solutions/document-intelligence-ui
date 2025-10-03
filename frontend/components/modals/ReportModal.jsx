@@ -25,6 +25,13 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
       setLoading(true);
       setError(null);
       
+      // Log fetch report details
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      console.log('🔍 Fetch Latest Report - Backend API URL:', backendUrl);
+      console.log('🏭 Industry:', industry);
+      console.log('📋 Use Case:', useCase);
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/latest/${industry}/${useCase}`);
+      
       const reportData = await ReportsAPIClient.getLatestReport(industry, useCase);
       setReport(reportData);
     } catch (err) {
@@ -37,6 +44,19 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
 
   const handleDownload = async () => {
     if (!report) return;
+
+    // Log download details
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('📥 Download Report - Backend API URL:', backendUrl);
+    console.log('🆔 Report ID:', report.report_id);
+    console.log('🏭 Industry:', industry);
+    console.log('📋 Use Case:', useCase);
+    console.log('📌 Status:', report.status);
+    if (report.status === "seed") {
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/seed/${industry}/${useCase}/download`);
+    } else {
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/${report.report_id}/download`);
+    }
 
     try {
       setDownloading(true);
@@ -100,6 +120,14 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
   const generateAdhocReport = async () => {
     setLoading(true);
     setError(null);
+    
+    // Log report generation details
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('📊 Generate Ad-hoc Report - Backend API URL:', backendUrl);
+    console.log('🏭 Industry:', industry);
+    console.log('📋 Use Case:', useCase);
+    console.log('🔗 Full URL:', `${backendUrl}/api/reports/generate-adhoc`);
+    
     try {
       const result = await ReportsAPIClient.generateAdhocReport(industry, useCase);
       if (result.status === "success") {

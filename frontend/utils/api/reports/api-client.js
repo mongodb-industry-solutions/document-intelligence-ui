@@ -50,7 +50,7 @@ export const ReportsAPIClient = {
     }
     
     // Handle regular report downloads
-    const response = await fetch(`${API_BASE_URL}/api/reports/download/${reportId}`);
+    const response = await fetch(`${API_BASE_URL}/api/reports/${reportId}/download`);
     
     if (!response.ok) {
       throw new Error('Failed to download report');
@@ -61,7 +61,7 @@ export const ReportsAPIClient = {
 
   // Get report preview/info
   async getReportInfo(reportId) {
-    const response = await fetch(`${API_BASE_URL}/api/reports/preview/${reportId}`);
+    const response = await fetch(`${API_BASE_URL}/api/reports/${reportId}/preview`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch report info');
