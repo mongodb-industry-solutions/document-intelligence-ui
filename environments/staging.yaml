@@ -1,14 +1,10 @@
 env:
   NODE_ENV: staging
-  
-# Secret environment variables (references to K8s secrets)
-envSecrets:
-  NEXT_PUBLIC_API_URL: document-intelligence-ui-secrets
+  # Use internal k8s service - bypasses authentication
+  INTERNAL_API_URL: http://document-intelligence-web-app:80
+  # Keep external URL as fallback (though it won't be used due to auth issues)
+  NEXT_PUBLIC_API_URL: https://document-intelligence.industrysolutions.staging.corp.mongodb.com
 
-# Add IRSA configuration here
+# No service account needed for frontend
 serviceAccount:
-  enabled: true
-  # create: false  # Don't create a new service account
-  name: irsa-staging  # Use the existing one
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::275662791714:role/kanopy-staging-cicd-irsa
+  enabled: false

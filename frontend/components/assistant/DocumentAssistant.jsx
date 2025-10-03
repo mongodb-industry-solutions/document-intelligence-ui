@@ -21,7 +21,10 @@ import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkT
 
 
 // Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.INTERNAL_API_URL || 
+                    process.env.NEXT_PUBLIC_API_URL || 
+                    "http://localhost:8080";
+
 
 const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [query, setQuery] = useState("");

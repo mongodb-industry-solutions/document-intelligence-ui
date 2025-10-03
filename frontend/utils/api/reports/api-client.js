@@ -1,7 +1,9 @@
 // Reports API client for scheduled reports operations
 
 // Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.INTERNAL_API_URL || 
+                    process.env.NEXT_PUBLIC_API_URL || 
+                    "http://localhost:8080";
 
 export const ReportsAPIClient = {
   // Get latest report for a specific industry/use case
