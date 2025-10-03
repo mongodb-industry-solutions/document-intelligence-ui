@@ -1,5 +1,8 @@
 env:
   NODE_ENV: staging
+    # AWS region for IRSA (no credentials needed)
+  AWS_REGION: us-east-1
+  NEXT_PUBLIC_API_URL: https://document-intelligence.industrysolutions.staging.corp.mongodb.com
   
 # Secret environment variables (references to K8s secrets)
 envSecrets:
