@@ -6,7 +6,7 @@
 export async function GET(request) {
   const backendUrl = process.env.INTERNAL_API_URL || 
                      process.env.NEXT_PUBLIC_API_URL || 
-                     "http://localhost:8080";
+                     "http://localhost:8000";
 
   try {
     const response = await fetch(`${backendUrl}/api/documents/stats/summary`, {
