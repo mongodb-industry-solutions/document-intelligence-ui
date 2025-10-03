@@ -199,9 +199,6 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     } finally {
       setLoading(false);
     }
-
-    console.log(sections)
-
   };
 
 
