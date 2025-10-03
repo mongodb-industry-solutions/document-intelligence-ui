@@ -231,12 +231,6 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                     {formatDate(report.generated_at)}
                   </span>
                 </div>
-                {report.status !== "seed" && (
-                  <div className={styles.metaItem}>
-                    <Database size={16} color="#718096" />
-                    <span>Based on {report.document_count} documents</span>
-                  </div>
-                )}
                 <div className={styles.metaItem}>
                   <FileText size={16} color="#718096" />
                   <span>Size: {formatFileSize(report.file_size_kb)}</span>
