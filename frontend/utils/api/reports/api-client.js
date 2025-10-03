@@ -1,14 +1,12 @@
 // Reports API client for scheduled reports operations
 
-// Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.INTERNAL_API_URL || 
-                    process.env.NEXT_PUBLIC_API_URL || 
-                    "http://localhost:8080";
+// Use local Next.js API routes (server-side proxy to backend)
+const API_BASE_URL = "/api";
 
 export const ReportsAPIClient = {
   // Get latest report for a specific industry/use case
   async getLatestReport(industry, useCase) {
-    const response = await fetch(`${API_BASE_URL}/api/reports/latest/${industry}/${useCase}`);
+    const response = await fetch(`${API_BASE_URL}/reports/latest/${industry}/${useCase}`);
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -29,7 +27,7 @@ export const ReportsAPIClient = {
     if (filters.status) queryParams.append('status', filters.status);
     if (filters.limit) queryParams.append('limit', filters.limit);
     
-    const response = await fetch(`${API_BASE_URL}/api/reports/list?${queryParams}`);
+    const response = await fetch(`${API_BASE_URL}/reports/list?${queryParams}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch reports');
@@ -42,7 +40,7 @@ export const ReportsAPIClient = {
   async downloadReport(reportId, industry = null, useCase = null) {
     // Handle seed report downloads
     if (reportId === "seed" && industry && useCase) {
-      const response = await fetch(`${API_BASE_URL}/api/reports/seed/${industry}/${useCase}/download`);
+      const response = await fetch(`${API_BASE_URL}/reports/seed/${industry}/${useCase}/download`);
       
       if (!response.ok) {
         throw new Error('Failed to download seed report');
@@ -52,7 +50,7 @@ export const ReportsAPIClient = {
     }
     
     // Handle regular report downloads
-    const response = await fetch(`${API_BASE_URL}/api/reports/${reportId}/download`);
+    const response = await fetch(`${API_BASE_URL}/reports/download/${reportId}`);
     
     if (!response.ok) {
       throw new Error('Failed to download report');
@@ -63,7 +61,7 @@ export const ReportsAPIClient = {
 
   // Get report preview/info
   async getReportInfo(reportId) {
-    const response = await fetch(`${API_BASE_URL}/api/reports/${reportId}/preview`);
+    const response = await fetch(`${API_BASE_URL}/reports/preview/${reportId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch report info');
@@ -74,7 +72,7 @@ export const ReportsAPIClient = {
 
   // Generate a new report manually
   async generateReport(industry, useCase) {
-    const response = await fetch(`${API_BASE_URL}/api/reports/generate`, {
+    const response = await fetch(`${API_BASE_URL}/reports/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +89,7 @@ export const ReportsAPIClient = {
 
   // Generate an ad-hoc report (stored both as scheduled and seed)
   async generateAdhocReport(industry, useCase) {
-    const response = await fetch(`${API_BASE_URL}/api/reports/generate-adhoc`, {
+    const response = await fetch(`${API_BASE_URL}/reports/generate-adhoc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +106,7 @@ export const ReportsAPIClient = {
 
   // Get scheduler status
   async getSchedulerStatus() {
-    const response = await fetch(`${API_BASE_URL}/api/reports/status`);
+    const response = await fetch(`${API_BASE_URL}/reports/status`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch scheduler status');
@@ -119,7 +117,7 @@ export const ReportsAPIClient = {
 
   // Get available industries and use cases
   async getAvailableIndustries() {
-    const response = await fetch(`${API_BASE_URL}/api/reports/industries`);
+    const response = await fetch(`${API_BASE_URL}/reports/industries`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch available industries');
@@ -130,7 +128,7 @@ export const ReportsAPIClient = {
 
   // Clean up orphaned reports
   async cleanupOrphanedReports() {
-    const response = await fetch(`${API_BASE_URL}/api/reports/cleanup-orphaned`, {
+    const response = await fetch(`${API_BASE_URL}/reports/cleanup-orphaned`, {
       method: 'POST',
     });
     

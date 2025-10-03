@@ -1,7 +1,5 @@
-// Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.INTERNAL_API_URL || 
-                    process.env.NEXT_PUBLIC_API_URL || 
-                    "http://localhost:8080";
+// Use local Next.js API routes (server-side proxy to backend)
+const API_BASE_URL = "/api";
 
 /**
  * Document API client for interacting with backend document endpoints
@@ -32,7 +30,7 @@ class DocumentsAPIClient {
         queryParams.append('sources', source);
       });
 
-      const response = await fetch(`${API_BASE_URL}/api/documents/list?${queryParams}`, {
+      const response = await fetch(`${API_BASE_URL}/documents/list?${queryParams}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -58,7 +56,7 @@ class DocumentsAPIClient {
    */
   static async getDocumentMetadata(documentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`, {
+      const response = await fetch(`${API_BASE_URL}/documents/${documentId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -84,7 +82,7 @@ class DocumentsAPIClient {
    */
   static async deleteDocument(documentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`, {
+      const response = await fetch(`${API_BASE_URL}/documents/${documentId}`, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',
@@ -109,7 +107,7 @@ class DocumentsAPIClient {
    */
   static async getCollectionStats() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/stats/summary`, {
+      const response = await fetch(`${API_BASE_URL}/documents/stats`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -135,7 +133,7 @@ class DocumentsAPIClient {
    */
   static async documentExists(documentName) {
     const params = new URLSearchParams({ document_name: documentName });
-    const response = await fetch(`${API_BASE_URL}/api/documents/exists?${params}`, {
+    const response = await fetch(`${API_BASE_URL}/documents/exists?${params}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     });
@@ -171,7 +169,7 @@ class DocumentsAPIClient {
 
     const workflow_id = `${industry}_${useCase}_${Date.now()}`;
 
-    const response = await fetch(`${API_BASE_URL}/api/ingestion/start`, {
+    const response = await fetch(`${API_BASE_URL}/ingestion/start`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ source_paths, workflow_id }),
@@ -191,7 +189,7 @@ class DocumentsAPIClient {
    * @returns {Promise<Object>} IngestionStatus
    */
   static async getIngestionStatus(workflowId) {
-    const response = await fetch(`${API_BASE_URL}/api/ingestion/status/${workflowId}`, {
+    const response = await fetch(`${API_BASE_URL}/ingestion/status/${workflowId}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     });
@@ -208,7 +206,7 @@ class DocumentsAPIClient {
    * @param {number} [limit=200]
    */
   static async getIngestionLogs(workflowId, limit = 200) {
-    const response = await fetch(`${API_BASE_URL}/api/ingestion/logs/${workflowId}?limit=${limit}`, {
+    const response = await fetch(`${API_BASE_URL}/ingestion/logs/${workflowId}?limit=${limit}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     });
