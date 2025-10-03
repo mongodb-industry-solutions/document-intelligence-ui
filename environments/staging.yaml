@@ -1,8 +1,5 @@
 env:
   NODE_ENV: staging
-  # AWS region for IRSA (no credentials needed)
-  AWS_REGION: us-east-1
-  NEXT_PUBLIC_API_URL: 
   # Use internal k8s service - bypasses authentication
   INTERNAL_API_URL: http://document-intelligence-web-app:80
   # Keep external URL as fallback (though it won't be used due to auth issues)
