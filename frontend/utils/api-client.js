@@ -1,7 +1,7 @@
 // Client-side API service for document intelligence operations
 
-// Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// Direct backend API calls (no Next.js proxy)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const documentService = {
   // Upload PDF document
