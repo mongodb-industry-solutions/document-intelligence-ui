@@ -25,6 +25,13 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
       setLoading(true);
       setError(null);
       
+      // Log fetch report details
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      console.log('🔍 Fetch Latest Report - Backend API URL:', backendUrl);
+      console.log('🏭 Industry:', industry);
+      console.log('📋 Use Case:', useCase);
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/latest/${industry}/${useCase}`);
+      
       const reportData = await ReportsAPIClient.getLatestReport(industry, useCase);
       setReport(reportData);
     } catch (err) {
@@ -37,6 +44,19 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
 
   const handleDownload = async () => {
     if (!report) return;
+
+    // Log download details
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('📥 Download Report - Backend API URL:', backendUrl);
+    console.log('🆔 Report ID:', report.report_id);
+    console.log('🏭 Industry:', industry);
+    console.log('📋 Use Case:', useCase);
+    console.log('📌 Status:', report.status);
+    if (report.status === "seed") {
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/seed/${industry}/${useCase}/download`);
+    } else {
+      console.log('🔗 Full URL:', `${backendUrl}/api/reports/${report.report_id}/download`);
+    }
 
     try {
       setDownloading(true);
@@ -100,32 +120,84 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
   const generateAdhocReport = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const result = await ReportsAPIClient.generateAdhocReport(industry, useCase);
-      if (result.status === "success") {
-        pushToast({
-          variant: "success",
-          title: "Report Generated",
-          description: "Ad-hoc report generated successfully.",
-          dismissible: true,
-        });
-        // Refresh the report
-        await fetchLatestReport();
-      } else {
-        throw new Error(result.message || "Failed to generate report");
-      }
-    } catch (err) {
-      console.error("Error generating ad-hoc report:", err);
-      setError(err.message);
-      pushToast({
-        variant: "error",
-        title: "Generation Failed",
-        description: "Could not generate ad-hoc report. Please try again.",
-        dismissible: true,
+    
+    // Log report generation details
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('📊 Generate Ad-hoc Report - Backend API URL:', backendUrl);
+    console.log('🏭 Industry:', industry);
+    console.log('📋 Use Case:', useCase);
+    console.log('🔗 Full URL:', `${backendUrl}/api/reports/generate-adhoc`);
+    
+    // Show immediate feedback
+    pushToast({
+      variant: "info",
+      title: "Report Generation Started",
+      description: "Report is being generated. This may take a few minutes...",
+      dismissible: true,
+    });
+    
+    // Trigger generation (fire and forget - don't wait for completion)
+    ReportsAPIClient.generateAdhocReport(industry, useCase)
+      .then(() => {
+        console.log("✅ Report generation request accepted");
+      })
+      .catch((err) => {
+        // Log error but don't fail - report might still be generating
+        console.warn("⚠️ Generation request error (report may still be processing):", err.message);
       });
-    } finally {
-      setLoading(false);
-    }
+    
+    // Start polling for the new report immediately
+    let pollCount = 0;
+    const maxPolls = 60; // Poll for up to 5 minutes (60 * 5 seconds)
+    
+    const pollForReport = async () => {
+      try {
+        pollCount++;
+        console.log(`🔄 Polling for report (attempt ${pollCount}/${maxPolls})...`);
+        
+        const reportData = await ReportsAPIClient.getLatestReport(industry, useCase);
+        
+        if (reportData && reportData.status !== "seed") {
+          // Found a generated report!
+          console.log("✅ Report generation completed!");
+          setReport(reportData);
+          setLoading(false);
+          pushToast({
+            variant: "success",
+            title: "Report Ready",
+            description: "Your report has been generated successfully.",
+            dismissible: true,
+          });
+          return;
+        }
+        
+        // Continue polling if not found yet
+        if (pollCount < maxPolls) {
+          setTimeout(pollForReport, 5000); // Poll every 5 seconds
+        } else {
+          // Timeout after max polls
+          setLoading(false);
+          pushToast({
+            variant: "warning",
+            title: "Generation In Progress",
+            description: "Report is still being generated. Please check back in a few minutes.",
+            dismissible: true,
+          });
+        }
+      } catch (err) {
+        console.error("Error polling for report:", err);
+        // Continue polling even on error
+        if (pollCount < maxPolls) {
+          setTimeout(pollForReport, 5000);
+        } else {
+          setLoading(false);
+          setError("Report generation is taking longer than expected. Please refresh to check status.");
+        }
+      }
+    };
+    
+    // Start polling after a short delay
+    setTimeout(pollForReport, 3000);
   };
 
   if (!isOpen) return null;

@@ -198,7 +198,7 @@ KEY FEATURES:
 Required environment variables:
 ```bash
 # Backend API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 Note: Frontend connects to the FastAPI backend, not directly to MongoDB.
@@ -245,7 +245,7 @@ The system supports ingesting documents from multiple sources:
 Documents can be uploaded via API and stored in the Docker volume:
 ```bash
 # Upload documents
-curl -X POST http://localhost:8080/api/upload/documents \
+curl -X POST http://localhost:8000/api/upload/documents \
   -F "files=@document.pdf" \
   -F "industry=fsi" \
   -F "use_case=credit_rating"
@@ -253,16 +253,16 @@ curl -X POST http://localhost:8080/api/upload/documents \
 # Available use cases: credit_rating, payment_exception, investment_research, kyc_onboarding, loan_origination
 
 # List uploaded documents in an industry/use_case
-curl "http://localhost:8080/api/upload/documents/fsi?use_case=credit_rating"
+curl "http://localhost:8000/api/upload/documents/fsi?use_case=credit_rating"
 
 # Delete specific document in an industry/use_case
-curl -X DELETE "http://localhost:8080/api/upload/documents/fsi/document.pdf?use_case=credit_rating"
+curl -X DELETE "http://localhost:8000/api/upload/documents/fsi/document.pdf?use_case=credit_rating"
 
 # Delete all documents in an industry/use_case folder
-curl -X DELETE "http://localhost:8080/api/upload/documents/fsi?use_case=credit_rating"
+curl -X DELETE "http://localhost:8000/api/upload/documents/fsi?use_case=credit_rating"
 
 # Ingest from local storage
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": ["@local@/docs/fsi/credit_rating"],
@@ -292,7 +292,7 @@ curl -X POST http://localhost:8080/api/ingestion/start \
 #### Google Drive Usage:
 ```bash
 # Ingest from Google Drive FSI folder
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": ["@gdrive@fsi/credit_rating"],
@@ -312,7 +312,7 @@ Configure your own S3 bucket structure following this pattern:
 #### S3 Usage Examples
 ```bash
 # Ingest from S3 FSI folder
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": ["@s3@fsi"],
@@ -320,7 +320,7 @@ curl -X POST http://localhost:8080/api/ingestion/start \
   }'
 
 # Ingest from specific S3 subfolder with use case
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": ["@s3@fsi/credit_rating"],
@@ -328,7 +328,7 @@ curl -X POST http://localhost:8080/api/ingestion/start \
   }'
 
 # Mix local and S3 sources in one workflow
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": [
@@ -359,7 +359,7 @@ Document paths stored in MongoDB include full source information:
 
 #### Mixed Source Example:
 ```bash
-curl -X POST http://localhost:8080/api/ingestion/start \
+curl -X POST http://localhost:8000/api/ingestion/start \
   -H "Content-Type: application/json" \
   -d '{
     "source_paths": [
