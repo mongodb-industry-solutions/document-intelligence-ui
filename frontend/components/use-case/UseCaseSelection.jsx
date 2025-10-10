@@ -18,7 +18,7 @@ const UseCaseSelection = ({ onContinue }) => {
       icon: "bank.png"
     },
     {
-      id: "payment_exception",
+      id: "payment_processing_exception",
       title: "Exception Handling in Payment Processing",
       icon: "card.png"
     },
