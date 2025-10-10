@@ -36,6 +36,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const messagesEndRef = useRef(null);
   const [openAssistantHelpModal, setOpenAssistantHelpModal] = useState(false);
   const [openDocsHelpModal, setOpenDocsHelpModal] = useState(false);
+  const [agentPersona, setAgentPersona] = useState(null);
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
@@ -52,6 +53,28 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Fetch agent persona when use case changes
+  useEffect(() => {
+    if (useCase) {
+      fetchAgentPersona();
+    }
+  }, [useCase]);
+
+  const fetchAgentPersona = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/qa/persona?use_case=${useCase}&industry=fsi`);
+      if (response.ok) {
+        const data = await response.json();
+        setAgentPersona(data);
+        console.log('Agent persona loaded:', data.persona_name);
+      }
+    } catch (err) {
+      console.error('Error fetching agent persona:', err);
+      // Use default if fetch fails
+      setAgentPersona(null);
+    }
+  };
 
   const getSelectedDocumentNames = () => {
     return documents
@@ -299,7 +322,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
           <div className={`${styles.assistantMessage} ${styles.welcome}`}>
             <div className={styles.messageAvatar}>AI</div>
             <div className={`${styles.messageBubble} ${styles.welcomeBubble}`}>
-              <p>Hi! I'm your AI Assistant. How can I help you?</p>
+              <p>{agentPersona?.greeting || "Hi! I'm your AI Assistant. How can I help you?"}</p>
             </div>
           </div>
 
@@ -378,6 +401,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             useCase={useCase}
             hasSelectedDocuments={selectedDocuments.length > 0}
             hasPreviousMessages={messages.length > 1} // More than 1 because first message is AI greeting
+            personaQuestions={agentPersona?.example_questions || []}
           />
         </div>
 

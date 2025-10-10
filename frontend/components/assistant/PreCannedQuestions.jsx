@@ -5,7 +5,7 @@ import Button from "@leafygreen-ui/button";
 import { MessageCircle, Search, FileText, Brain, HelpCircle, TrendingUp, HistoryIcon } from "lucide-react";
 import styles from "./PreCannedQuestions.module.css";
 
-const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, hasPreviousMessages }) => {
+const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, hasPreviousMessages, personaQuestions = [] }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   // Define pre-canned questions based on use case and capabilities
@@ -19,13 +19,6 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
         category: "general"
       },
       {
-        id: "about",
-        question: "What are these documents about?",
-        icon: FileText,
-        description: "Get a sense of what the documents contain",
-        category: "analysis"
-      },
-      {
         id: "memory",
         question: "What questions have I asked you so far?",
         icon: HistoryIcon,
@@ -34,24 +27,27 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
       }
     ];
 
-    // Add use-case specific questions
-    if (useCase === "fsi") {
-      baseQuestions.push(
-        {
-          id: "risk_assessment",
-          question: "What are the key risk factors mentioned?",
-          icon: Brain,
-          description: "Identify and analyze risk factors in financial documents",
-          category: "fsi"
-        },
-        {
-          id: "compliance",
-          question: "Are there any compliance issues or regulatory concerns?",
-          icon: FileText,
-          description: "Check for compliance and regulatory matters",
-          category: "fsi"
-        }
-      );
+    // Add persona-specific example questions if available
+    if (personaQuestions && personaQuestions.length > 0) {
+      // Map persona questions to component format (take first 3)
+      personaQuestions.slice(0, 3).forEach((question, index) => {
+        baseQuestions.push({
+          id: `persona_${index}`,
+          question: question,
+          icon: index === 0 ? Search : (index === 1 ? TrendingUp : Brain),
+          description: "Ask about this topic from the documents",
+          category: "persona"
+        });
+      });
+    } else {
+      // Fallback: generic document question if no persona questions
+      baseQuestions.push({
+        id: "about",
+        question: "What are these documents about?",
+        icon: FileText,
+        description: "Get a sense of what the documents contain",
+        category: "analysis"
+      });
     }
 
     return baseQuestions;
@@ -73,7 +69,9 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
       general: "#00A651",
       search: "#0066CC", 
       analysis: "#FF6B35",
-      fsi: "#9B59B6"
+      fsi: "#9B59B6",
+      persona: "#00684A",  // MongoDB green for persona questions
+      memory: "#666666"
     };
     return colors[category] || "#666";
   };

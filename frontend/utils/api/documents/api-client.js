@@ -8,7 +8,7 @@ class DocumentsAPIClient {
   /**
    * List documents filtered by use case and sources
    * @param {Object} params - Query parameters
-   * @param {string} params.useCase - Use case filter (credit_rating, payment_exception, etc.)
+   * @param {string} params.useCase - Use case filter (credit_rating, payment_processing_exception, etc.)
    * @param {string[]} params.sources - Array of sources (@local, @s3, @gdrive)
    * @param {string} params.status - Document status filter (default: completed)
    * @param {number} params.limit - Maximum number of documents to return
