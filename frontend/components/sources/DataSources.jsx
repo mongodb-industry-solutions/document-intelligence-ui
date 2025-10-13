@@ -8,7 +8,7 @@ import Card from "@leafygreen-ui/card";
 import { RefreshCw } from "lucide-react";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useSelection } from "@/contexts/SelectionContext";
-import Stepper, { Step } from "@leafygreen-ui/stepper";
+import ClickableStepper from "@/components/layout/ClickableStepper";
 import { H1, Body, Subtitle } from "@leafygreen-ui/typography";
 import InfoWizard from "@/components/InfoWizard/InfoWizard";
 import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
@@ -165,11 +165,7 @@ const DataSources = ({ onContinue, onBack }) => {
 
         <Body>From the options below choose the sources you would like to sync to retrieve your documents.</Body>
 
-        <Stepper currentStep={2} maxDisplayedSteps={3} className={styles.stepper}>
-          <Step>Use Case</Step>
-          <Step>Sources</Step>
-          <Step>Document Intelligence</Step>
-        </Stepper>
+        <ClickableStepper currentStep={2} />
 
 
       </div>
