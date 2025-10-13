@@ -1,0 +1,37 @@
+.clickableStepper {
+  width: 100%;
+}
+
+.stepperWrapper {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* When on final step, disable clicking */
+.notClickable {
+  cursor: default !important;
+  pointer-events: none;
+}
+
+/* Add visual feedback for completed steps */
+.clickableStepper :global(li[data-lgid="lg-step"]) {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover effect for all steps (only when clickable) */
+.clickableStepper:not(.notClickable) :global(li[data-lgid="lg-step"]:hover) {
+  opacity: 0.8;
+  transform: scale(1.02);
+}
+
+/* Make completed steps more obviously clickable (only when clickable) */
+.clickableStepper:not(.notClickable) :global(li[data-lgid="lg-step"][aria-current="false"]:hover) {
+  opacity: 0.7;
+}
+
+/* When not clickable, show default cursor */
+.notClickable :global(li[data-lgid="lg-step"]) {
+  cursor: default !important;
+}
+

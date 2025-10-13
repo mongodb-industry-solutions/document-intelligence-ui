@@ -72,6 +72,7 @@ export default function DocumentIntelligencePage() {
     setSelectedDocuments(prev => prev.filter(id => id !== documentId));
   };
 
+
   // Don't render anything until we know if we need to redirect
   if (isLoading || !isSelectionComplete()) {
     return null;
