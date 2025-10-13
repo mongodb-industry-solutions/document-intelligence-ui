@@ -243,12 +243,17 @@
 .actions {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 12px;
   padding-top: 16px;
   border-top: 1px solid #E2E8F0;
+  flex-wrap: wrap;
 }
 
-.downloadButton {
-  min-width: 160px;
+/* All action buttons have the same width for consistent spacing */
+.actionButton {
+  min-width: 180px;
+  flex-shrink: 0;
 }
 
 /* Responsive design */

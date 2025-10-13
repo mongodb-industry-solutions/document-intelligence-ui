@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Download, FileText, Calendar, Database, AlertCircle } from "lucide-react";
+import { X, Download, FileText, Calendar, Database, AlertCircle, Eye } from "lucide-react";
 import Button from "@leafygreen-ui/button";
 import { useToast } from "@/components/toast/Toast";
 import ReportsAPIClient from "@/utils/api/reports/api-client";
@@ -40,6 +40,28 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewReport = () => {
+    if (!report) return;
+
+    // Log view details
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('👁️ View Report - Backend API URL:', backendUrl);
+    console.log('🆔 Report ID:', report.report_id);
+    console.log('🏭 Industry:', industry);
+    console.log('📋 Use Case:', useCase);
+    console.log('📌 Status:', report.status);
+
+    // Build preview URL - use /preview endpoint for BOTH generated and seed reports
+    const url = report.status === 'seed'
+      ? `${backendUrl}/api/reports/seed/${industry}/${useCase}/preview`
+      : `${backendUrl}/api/reports/${report.report_id}/preview`;
+    
+    console.log('🔗 Opening preview URL in new tab:', url);
+    
+    // Open in new tab with PDF viewer (inline display)
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = async () => {
@@ -211,7 +233,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
               <FileText size={24} color="#00684A" />
               <div>
                 <h2 className={styles.title}>
-                  {useCase ? useCase.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Scheduled'} Report
+                  {useCase ? useCase.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Scheduled'} Report
                 </h2>
                 <p className={styles.subtitle}>
                   {industry ? `${industry.toUpperCase()} Industry` : 'Automated Report'}
@@ -280,17 +302,14 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                   <FileText size={32} color={report.status === "seed" ? "#9CA3AF" : "#00684A"} />
                 </div>
                 <div className={styles.reportDetails}>
-                  <h3 className={styles.reportTitle}>
-                    {useCase.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Report
-                    {report.status === "seed" && (
-                      <span className={styles.fallbackBadge}>Fallback</span>
-                    )}
-                  </h3>
                   <p className={styles.reportDescription}>
                     {report.status === "seed" 
                       ? "Using fallback report (generated report unavailable)" 
                       : "Automated report generated from document analysis"
                     }
+                    {report.status === "seed" && (
+                      <span className={styles.fallbackBadge}>Fallback</span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -321,20 +340,31 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                 <Button
                   variant="primary"
                   size="default"
+                  leftGlyph={<Eye size={16} />}
+                  onClick={handleViewReport}
+                  className={styles.actionButton}
+                >
+                  View Report
+                </Button>
+                
+                <Button
+                  variant="default"
+                  size="default"
                   leftGlyph={<Download size={16} />}
                   onClick={handleDownload}
                   disabled={downloading}
-                  className={styles.downloadButton}
+                  className={styles.actionButton}
                 >
                   {downloading ? 'Downloading...' : 'Download Report'}
                 </Button>
+                
                 {report.status === "seed" && (
                   <Button
                     variant="default"
                     size="default"
                     onClick={generateAdhocReport}
                     disabled={loading}
-                    className={styles.refreshButton}
+                    className={styles.actionButton}
                   >
                     {loading ? "Generating..." : "Generate Fresh Report"}
                   </Button>
