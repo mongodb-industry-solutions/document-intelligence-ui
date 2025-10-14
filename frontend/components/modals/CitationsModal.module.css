@@ -151,3 +151,35 @@
 .citationsContainer::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+.citationActions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #E8EDEB;
+}
+
+.viewDocButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #F5F6F7;
+  border: 1px solid #C1C7C6;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #00684A;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewDocButton:hover {
+  background: #E8EDEB;
+  border-color: #00684A;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.viewDocButton:active {
+  transform: translateY(0);
+}

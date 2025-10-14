@@ -37,6 +37,10 @@ export default function DataSourcesPage() {
   };
   
   const handleBack = () => {
+    // Clear session when going back to use-case
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('di_session_id');
+    }
     router.push("/use-case");
   };
 
