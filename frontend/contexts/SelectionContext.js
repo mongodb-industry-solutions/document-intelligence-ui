@@ -60,6 +60,7 @@ export const SelectionProvider = ({ children }) => {
     setSources([]);
     localStorage.removeItem('selectedUseCase');
     localStorage.removeItem('selectedSources');
+    localStorage.removeItem('di_session_id'); // Also clear chat session
   };
 
   // Check if selection is complete

@@ -1,10 +1,21 @@
 "use client";
 
 import React from 'react';
+import { FileText } from 'lucide-react';
 import styles from './CitationsModal.module.css';
 
 const CitationsModal = ({ isOpen, onClose, citations = [] }) => {
   if (!isOpen) return null;
+
+  const handleViewDocument = (documentId) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const viewUrl = `${API_URL}/api/documents/${documentId}/view`;
+    
+    console.log('👁️ Opening source document from citation:', documentId);
+    
+    // Open document in new tab
+    window.open(viewUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -29,14 +40,25 @@ const CitationsModal = ({ isOpen, onClose, citations = [] }) => {
                 </div>
                 
                 <div className={styles.citationMetadata}>
-                  <span>Chunk #{citation.chunk_index}</span>
-                  <span className={styles.separator}>•</span>
                   <span>Relevance: {(citation.similarity_score * 100).toFixed(1)}%</span>
                 </div>
                 
                 <div className={styles.citationContent}>
                   <p>{citation.chunk_text}</p>
                 </div>
+                
+                {/* View Full Document Button */}
+                {citation.document_id && (
+                  <div className={styles.citationActions}>
+                    <button
+                      className={styles.viewDocButton}
+                      onClick={() => handleViewDocument(citation.document_id)}
+                    >
+                      <FileText size={14} />
+                      <span>View Full Document</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           )}
