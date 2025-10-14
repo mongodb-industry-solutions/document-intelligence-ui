@@ -26,6 +26,14 @@ export default function DocumentIntelligencePage() {
     }
   }, [isLoading, isSelectionComplete, router]);
 
+  // Reset state when useCase or sources change
+  useEffect(() => {
+    // Clear selected documents when context changes
+    setSelectedDocuments([]);
+    setDocuments([]);
+    setError(null);
+  }, [useCase, sources]);
+
   // Fetch documents when selection changes
   useEffect(() => {
     if (!isLoading && isSelectionComplete()) {

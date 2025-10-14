@@ -5,7 +5,7 @@ import Image from "next/image";
 import Button from "@leafygreen-ui/button";
 import Checkbox from "@leafygreen-ui/checkbox";
 import { useToast } from "@/components/toast/Toast";
-import { RefreshCw, Upload, X } from "lucide-react";
+import { RefreshCw, Upload, X, Eye } from "lucide-react";
 import styles from "./DocumentSidebar.module.css";
 import UploadModal from "@/components/modals/UploadModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
@@ -69,6 +69,16 @@ const DocumentSidebar = ({
   const handleDeleteClick = (doc) => {
     setDocumentToDelete(doc);
     setShowDeleteModal(true);
+  };
+
+  const handleViewDocument = (documentId) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const viewUrl = `${API_URL}/api/documents/${documentId}/view`;
+    
+    console.log('👁️ Opening document in new tab:', viewUrl);
+    
+    // Open document in new tab for preview
+    window.open(viewUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleDeleteConfirm = async () => {
@@ -199,6 +209,19 @@ const DocumentSidebar = ({
                     <span className={styles.fileExtension}>
                       .{doc.file_extension}
                     </span>
+                    
+                    {/* View Document Button - inline with filename */}
+                    <button
+                      className={styles.viewButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewDocument(doc.document_id);
+                      }}
+                      aria-label="View document"
+                      title="View document"
+                    >
+                      <Eye size={16} />
+                    </button>
                   </div>
                   <div className={styles.documentMeta}>
                     <span className={styles.fileSize}>
@@ -214,6 +237,7 @@ const DocumentSidebar = ({
                     </span>
                   </div>
                 </div>
+                
                 {/**
                 <button
                   className={styles.deleteButton}

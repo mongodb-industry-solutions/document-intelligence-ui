@@ -136,6 +136,32 @@
   min-width: 0;
 }
 
+.viewButton {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #00684A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  margin-left: 6px;
+}
+
+.viewButton:hover {
+  opacity: 1;
+  background-color: #E8F5E9;
+  transform: scale(1.15);
+}
+
+.viewButton:active {
+  transform: scale(1.05);
+}
+
 .documentHeader {
   display: flex;
   align-items: flex-start;

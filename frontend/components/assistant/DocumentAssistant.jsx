@@ -61,6 +61,22 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     }
   }, [useCase]);
 
+  // Reset component state when useCase changes
+  useEffect(() => {
+    // Clear messages and state when context changes
+    setMessages([]);
+    setCompletedMessages({});
+    setWorkflowSteps([]);
+    setQuery("");
+    setShowCitationsModal(false);
+    setSelectedCitations([]);
+    
+    // Clear session ID to start fresh
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('di_session_id');
+    }
+  }, [useCase]); // Only watch useCase since sources isn't a prop
+
   const fetchAgentPersona = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/qa/persona?use_case=${useCase}&industry=fsi`);
@@ -365,7 +381,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                           setShowCitationsModal(true);
                         }}
                       >
-                        📚 View {message.citations.length} source{message.citations.length > 1 ? 's' : ''}
+                        📚 View source{message.citations.length > 1 ? 's' : ''}
                       </Button>
                     )}
                   </div>

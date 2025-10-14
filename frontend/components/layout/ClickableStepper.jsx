@@ -32,6 +32,9 @@ const ClickableStepper = ({ currentStep = 1 }) => {
         // Going back to use case - clear ALL context to start fresh
         console.log('Clearing all context - starting over');
         clearSelection();
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('di_session_id');
+        }
         router.push('/use-case');
         break;
         
@@ -40,6 +43,9 @@ const ClickableStepper = ({ currentStep = 1 }) => {
         console.log('Keeping use case, clearing sources');
         setSources([]);
         localStorage.removeItem('selectedSources'); // Also clear from localStorage
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('di_session_id'); // Clear chat session
+        }
         router.push('/sources');
         break;
         
