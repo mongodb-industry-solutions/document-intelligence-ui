@@ -42,60 +42,62 @@ const InfoWizard = ({
       }
 
       {/* Updated Modal without the ref prop */}
-      <Modal
-        open={open}
-        setOpen={setOpen}
-        className={styles.modal} // Removed the `ref` prop
-      >
-        <div className={styles.modalContent}>
-          
-          <Tabs aria-label="info wizard tabs" selected={selected} onChange={(newSelected) => setSelected(newSelected)} className={styles.tabsContent}>
-            {sections.map((tab, tabIndex) => (
-              <Tab key={tabIndex} name={tab.heading} className={styles.tabsHeader}>
-                {tab.content.map((section, sectionIndex) => (
-                  <div key={sectionIndex} className={styles.section}>
-                    {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
-                    {
-                      section.body && section.isHTML === true
-                        ? <div className={styles.htmlRender} dangerouslySetInnerHTML={{ __html: section.body }}></div>
-                        : section.body && Array.isArray(section.body)
-                          ? <ul className={styles.list}>
-                            {
-                              section.body.map((item, idx) => (
-                                typeof (item) == 'object'
-                                  ? <li>
-                                    {item.heading}
-                                    <ul className={styles.list}>
-                                      {
-                                        item.body.map((subItem, idx) => (
-                                          <li key={idx}><Body>{subItem}</Body></li>
-                                        ))
-                                      }
-                                    </ul>
-                                  </li>
-                                  : <li key={idx}><Body>{item}</Body></li>
-                              )
-                              )
-                            }
-                          </ul>
-                          : <Body>{section.body}</Body>
-                    }
+      {open && (
+        <Modal
+          open={open}
+          setOpen={setOpen}
+          className={styles.modal} // Removed the `ref` prop
+        >
+          <div className={styles.modalContent}>
 
-                    {section.image && (
-                      <img
-                        src={section.image.src}
-                        alt={section.image.alt}
-                        width={section.image.width || 550}
-                        className={styles.modalImage}
-                      />
-                    )}
-                  </div>
-                ))}
-              </Tab>
-            ))}
-          </Tabs>
-        </div>
-      </Modal>
+            <Tabs aria-label="info wizard tabs" selected={selected} onChange={(newSelected) => setSelected(newSelected)} className={styles.tabsContent}>
+              {sections.map((tab, tabIndex) => (
+                <Tab key={tabIndex} name={tab.heading} className={styles.tabsHeader}>
+                  {tab.content.map((section, sectionIndex) => (
+                    <div key={sectionIndex} className={styles.section}>
+                      {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
+                      {
+                        section.body && section.isHTML === true
+                          ? <div className={styles.htmlRender} dangerouslySetInnerHTML={{ __html: section.body }}></div>
+                          : section.body && Array.isArray(section.body)
+                            ? <ul className={styles.list}>
+                              {
+                                section.body.map((item, idx) => (
+                                  typeof (item) == 'object'
+                                    ? <li>
+                                      {item.heading}
+                                      <ul className={styles.list}>
+                                        {
+                                          item.body.map((subItem, idx) => (
+                                            <li key={idx}><Body>{subItem}</Body></li>
+                                          ))
+                                        }
+                                      </ul>
+                                    </li>
+                                    : <li key={idx}><Body>{item}</Body></li>
+                                )
+                                )
+                              }
+                            </ul>
+                            : <Body>{section.body}</Body>
+                      }
+
+                      {section.image && (
+                        <img
+                          src={section.image.src}
+                          alt={section.image.alt}
+                          width={section.image.width || 550}
+                          className={styles.modalImage}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </Tab>
+              ))}
+            </Tabs>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

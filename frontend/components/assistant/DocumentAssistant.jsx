@@ -70,7 +70,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     setQuery("");
     setShowCitationsModal(false);
     setSelectedCitations([]);
-    
+
     // Clear session ID to start fresh
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('di_session_id');
@@ -303,6 +303,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <p className={styles.reportDescription}>Description</p>
               </div>
 
+
               <InfoWizard
                 open={openDocsHelpModal}
                 setOpen={setOpenDocsHelpModal}
@@ -311,6 +312,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 sections={docsTalkTrack}
                 openModalIsButton={false}
               />
+
 
               <div className={styles.reportActions}>
                 <Button
@@ -398,11 +400,16 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             <div className={styles.assistantMessage}>
               <div className={styles.messageAvatar}>AI</div>
               <div className={styles.messageBubble}>
-                <div className={styles.loadingDots}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+
+                {/* GIF added above the loading text */}
+                <div className={styles.loadingGifContainer}>
+                  <img
+                    src="/animated_bot.gif"
+                    alt="Assistant thinking"
+                    className={styles.loadingGif}
+                  />
                 </div>
+
                 <div className={styles.loadingMessage}>The agent is thinking</div>
               </div>
             </div>

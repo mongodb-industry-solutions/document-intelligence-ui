@@ -641,3 +641,15 @@
 .agenticMessage .messageBubble {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
+
+.loadingGifContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.loadingGif {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}

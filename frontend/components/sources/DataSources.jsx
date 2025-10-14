@@ -172,7 +172,7 @@ const DataSources = ({ onContinue, onBack }) => {
 
       <div className={styles.sourcesSection}>
        
-       {/** <InfoWizard
+       <InfoWizard
           open={openHelpModal}
           setOpen={setOpenHelpModal}
           tooltipText="Tell me more!"
@@ -180,7 +180,7 @@ const DataSources = ({ onContinue, onBack }) => {
           sections={sourcesTalkTrack}
           openModalIsButton={false}
         />
-         */}
+      
 
         <p className={styles.sourcesHint}>You can select multiple sources</p>
         <div className={styles.sourcesGrid}>
