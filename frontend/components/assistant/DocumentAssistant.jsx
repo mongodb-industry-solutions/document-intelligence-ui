@@ -299,8 +299,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <FileText size={24} color="#00684A" />
               </div>
               <div className={styles.reportInfo}>
-                <h4 className={styles.reportTitle}>Scheduled Report #1</h4>
-                <p className={styles.reportDescription}>Description</p>
+                <h4 className={styles.reportTitle}>Scheduled Report</h4>
+              
               </div>
 
 
@@ -317,7 +317,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
               <div className={styles.reportActions}>
                 <Button
                   size="default"
-                  variant="default"
+                  variant="primaryOutline"
                   className={styles.reportButton}
                   onClick={() => setShowReportModal(true)}
                 >

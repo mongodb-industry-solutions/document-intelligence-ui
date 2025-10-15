@@ -13,6 +13,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  
 }
 
 .titleSection {
@@ -29,6 +30,7 @@
 
 .startOverButton {
   flex-shrink: 0;
+  
 }
 
 /* Modal Styles (matching ReportModal pattern) */

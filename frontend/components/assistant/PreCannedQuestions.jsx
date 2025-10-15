@@ -5,7 +5,7 @@ import Button from "@leafygreen-ui/button";
 import { MessageCircle, Search, FileText, Brain, HelpCircle, TrendingUp, HistoryIcon } from "lucide-react";
 import styles from "./PreCannedQuestions.module.css";
 
-const SMALL_SCREEN_BREAKPOINT = 1966; // adjust as needed
+const SMALL_SCREEN_BREAKPOINT = 2000; // adjust as needed
 
 const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, hasPreviousMessages, personaQuestions = [] }) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);

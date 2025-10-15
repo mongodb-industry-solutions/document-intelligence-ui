@@ -20,6 +20,15 @@ const InfoWizard = ({
   sections = [],
 }) => {
   const [selected, setSelected] = useState(0);
+  const [enlargedImage, setEnlargedImage] = useState(null); // New state for enlarged image
+
+  const handleImageClick = (src) => {
+    setEnlargedImage(src); // Set the enlarged image source
+  };
+
+  const closeImageModal = () => {
+    setEnlargedImage(null); // Close the enlarged image modal
+  };
 
   return (
     <>
@@ -64,7 +73,7 @@ const InfoWizard = ({
                               {
                                 section.body.map((item, idx) => (
                                   typeof (item) == 'object'
-                                    ? <li>
+                                    ? <li key={idx}>
                                       {item.heading}
                                       <ul className={styles.list}>
                                         {
@@ -88,6 +97,7 @@ const InfoWizard = ({
                           alt={section.image.alt}
                           width={section.image.width || 550}
                           className={styles.modalImage}
+                          onClick={() => handleImageClick(section.image.src)} // Click handler
                         />
                       )}
                     </div>
@@ -96,6 +106,13 @@ const InfoWizard = ({
               ))}
             </Tabs>
           </div>
+        </Modal>
+      )}
+
+      {/* Enlarged Image Modal */}
+      {enlargedImage && (
+        <Modal open={!!enlargedImage} setOpen={closeImageModal} className={styles.enlargedImageModal}>
+          <img src={enlargedImage} alt="Enlarged" className={styles.enlargedImage} />
         </Modal>
       )}
     </>
