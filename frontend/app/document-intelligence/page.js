@@ -52,7 +52,15 @@ export default function DocumentIntelligencePage() {
         status: 'completed',
       });
       
-      setDocuments(response.documents || []);
+      const docs = response.documents || [];
+      setDocuments(docs);
+      
+      // Select all documents by default when they're first loaded
+      if (docs.length > 0) {
+        const allDocIds = docs.map(doc => doc.document_id);
+        setSelectedDocuments(allDocIds);
+        console.log(`✅ Auto-selected all ${allDocIds.length} documents`);
+      }
     } catch (err) {
       console.error('Error fetching documents:', err);
       setError(err.message);
@@ -69,6 +77,17 @@ export default function DocumentIntelligencePage() {
         return [...prev, documentId];
       }
     });
+  };
+
+  const handleSelectAll = (selectAll) => {
+    if (selectAll) {
+      // Select all documents
+      const allDocIds = documents.map(doc => doc.document_id);
+      setSelectedDocuments(allDocIds);
+    } else {
+      // Deselect all documents
+      setSelectedDocuments([]);
+    }
   };
 
   const handleRefresh = () => {
@@ -98,6 +117,7 @@ export default function DocumentIntelligencePage() {
             documents={documents}
             selectedDocuments={selectedDocuments}
             onDocumentToggle={handleDocumentToggle}
+            onSelectAll={handleSelectAll}
             onRefresh={handleRefresh}
             loading={loading}
             error={error}

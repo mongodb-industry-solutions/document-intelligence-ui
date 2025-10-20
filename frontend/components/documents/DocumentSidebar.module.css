@@ -89,6 +89,18 @@
   margin: 0 0 24px 0;
 }
 
+.selectAllContainer {
+  padding: 12px 16px;
+  background-color: #F5F6F7;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.selectAllCheckbox {
+  font-weight: 600;
+  color: #001E2B;
+}
+
 .loading,
 .error,
 .empty {

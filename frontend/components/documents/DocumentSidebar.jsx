@@ -15,6 +15,7 @@ const DocumentSidebar = ({
   documents,
   selectedDocuments,
   onDocumentToggle,
+  onSelectAll,
   onRefresh,
   loading,
   error,
@@ -133,6 +134,16 @@ const DocumentSidebar = ({
     setDocumentToDelete(null);
   };
 
+  const handleSelectAllClick = () => {
+    if (onSelectAll) {
+      // Use parent's bulk select/deselect function
+      onSelectAll(!allSelected);
+    }
+  };
+
+  const allSelected = documents.length > 0 && selectedDocuments.length === documents.length;
+  const someSelected = selectedDocuments.length > 0 && selectedDocuments.length < documents.length;
+
 
   return (
     <>
@@ -160,6 +171,19 @@ const DocumentSidebar = ({
             </div>
           </div>
         </div>
+
+        {/* Select All Checkbox */}
+        {!loading && !error && documents.length > 0 && (
+          <div className={styles.selectAllContainer}>
+            <Checkbox
+              checked={allSelected}
+              indeterminate={someSelected}
+              onChange={handleSelectAllClick}
+              label="Select All"
+              className={styles.selectAllCheckbox}
+            />
+          </div>
+        )}
 
 
 

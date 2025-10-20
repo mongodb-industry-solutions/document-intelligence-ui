@@ -1,0 +1,114 @@
+.thinkingContainer {
+  background: #F9FAFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  max-width: 500px;
+}
+
+.thinkingHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.thinkingGif {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+.thinkingTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5C6C75;
+  font-style: italic;
+}
+
+.thinkingSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+}
+
+.thinkingStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #FFFFFF;
+  border-radius: 6px;
+  border-left: 3px solid #C1C7C6;
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease-out;
+}
+
+.stepSuccess {
+  border-left-color: #00ED64;
+  background: #F0FDF4;
+}
+
+.stepWarning {
+  border-left-color: #FCD34D;
+  background: #FFFBEB;
+}
+
+.stepIcon {
+  flex-shrink: 0;
+  color: #00684A;
+  margin-top: 2px;
+}
+
+.stepDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00684A;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.stepMessage {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #001E2B;
+  flex: 1;
+}
+
+/* Scrollbar styling */
+.thinkingSteps::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thinkingSteps::-webkit-scrollbar-track {
+  background: #F5F6F7;
+  border-radius: 3px;
+}
+
+.thinkingSteps::-webkit-scrollbar-thumb {
+  background: #C1C7C6;
+  border-radius: 3px;
+}
+
+.thinkingSteps::-webkit-scrollbar-thumb:hover {
+  background: #889397;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
