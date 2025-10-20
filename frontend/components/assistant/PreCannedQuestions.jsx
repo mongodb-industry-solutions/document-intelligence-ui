@@ -31,7 +31,7 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
       {
         id: "memory",
         question: "What questions have I asked you so far?",
-        icon: HistoryIcon,
+        icon: Brain,
         description: "Review your conversation history",
         category: "memory"
       }
@@ -40,11 +40,12 @@ const PreCannedQuestions = ({ onQuestionSelect, useCase, hasSelectedDocuments, h
     // Add persona-specific example questions if available
     if (personaQuestions && personaQuestions.length > 0) {
       // Map persona questions to component format (take first 3)
+      // All persona questions use Search icon
       personaQuestions.slice(0, 3).forEach((question, index) => {
         baseQuestions.push({
           id: `persona_${index}`,
           question: question,
-          icon: index === 0 ? Search : (index === 1 ? TrendingUp : Brain),
+          icon: Search,
           description: "Ask about this topic from the documents",
           category: "persona"
         });

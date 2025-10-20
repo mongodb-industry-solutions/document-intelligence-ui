@@ -9,6 +9,7 @@ import Typewriter from "@/components/common/Typewriter";
 import CitationsModal from "@/components/modals/CitationsModal";
 import ReportModal from "@/components/modals/ReportModal";
 import PreCannedQuestions from "./PreCannedQuestions";
+import ThinkingProcess from "./ThinkingProcess";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import styles from "./DocumentAssistant.module.css";
 import IconButton from '@leafygreen-ui/icon-button';
@@ -37,6 +38,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const [openAssistantHelpModal, setOpenAssistantHelpModal] = useState(false);
   const [openDocsHelpModal, setOpenDocsHelpModal] = useState(false);
   const [agentPersona, setAgentPersona] = useState(null);
+  const [thinkingLogs, setThinkingLogs] = useState([]);
+  const [currentQuerySessionId, setCurrentQuerySessionId] = useState(null);
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
@@ -124,6 +127,48 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     }
   };
 
+  const pollThinkingLogs = useRef(null);
+
+  useEffect(() => {
+    // Create polling function that can access current loading state
+    pollThinkingLogs.current = async (sessionId) => {
+      if (!sessionId) return;
+      
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`);
+        if (res.ok) {
+          const data = await res.json();
+          console.log(`📊 Fetched ${data.logs ? data.logs.length : 0} thinking logs for session ${sessionId}`);
+          if (data.logs && data.logs.length > 0) {
+            setThinkingLogs(data.logs);
+          }
+        } else {
+          console.log(`⚠️ Failed to fetch logs: ${res.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching thinking logs:', error);
+      }
+    };
+  }, []);
+
+  // Poll thinking logs while loading
+  useEffect(() => {
+    if (loading && currentQuerySessionId) {
+      console.log(`🔄 Starting thinking log polling for ${currentQuerySessionId}`);
+      
+      const intervalId = setInterval(() => {
+        if (pollThinkingLogs.current) {
+          pollThinkingLogs.current(currentQuerySessionId);
+        }
+      }, 400);
+      
+      return () => {
+        console.log(`🛑 Stopping thinking log polling`);
+        clearInterval(intervalId);
+      };
+    }
+  }, [loading, currentQuerySessionId]);
+
   const handleStartNewChat = async () => {
     try {
       // Call backend to start new session
@@ -150,6 +195,8 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     setQuery("");
     setShowCitationsModal(false);
     setSelectedCitations([]);
+    setThinkingLogs([]);
+    setCurrentQuerySessionId(null);
   };
 
 
@@ -174,6 +221,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     setQuery("");
     setLoading(true);
     setWorkflowSteps([]);
+    setThinkingLogs([]); // Clear previous thinking logs
 
     try {
       // Generate session ID with timestamp format
@@ -183,6 +231,9 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         sessionStorage.setItem('di_session_id', id);
         return id;
       })()) : undefined;
+
+      // Store session ID to trigger polling via useEffect
+      setCurrentQuerySessionId(sessionId);
 
       // Use agentic RAG endpoint
       const endpoint = '/api/qa/query';
@@ -229,6 +280,25 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         setWorkflowSteps(data.workflow_steps);
       }
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Delay clearing thinking logs and cleanup database
+      setTimeout(async () => {
+        // Clean up logs from database
+        if (sessionId) {
+          try {
+            await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`, {
+              method: 'DELETE'
+            });
+            console.log(`🧹 Cleaned up thinking logs for session ${sessionId}`);
+          } catch (error) {
+            console.error('Error cleaning up thinking logs:', error);
+          }
+        }
+        
+        // Clear UI state
+        setThinkingLogs([]);
+        setCurrentQuerySessionId(null);
+      }, 1000); // Wait 1 second before clearing
     } catch (err) {
       const assistantMessage = {
         type: 'assistant',
@@ -236,6 +306,25 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         timestamp: new Date().toISOString(),
       };
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Clear thinking logs on error (with delay and cleanup)
+      setTimeout(async () => {
+        // Clean up logs from database on error too
+        const sessionId = currentQuerySessionId;
+        if (sessionId) {
+          try {
+            await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`, {
+              method: 'DELETE'
+            });
+            console.log(`🧹 Cleaned up thinking logs after error for session ${sessionId}`);
+          } catch (error) {
+            console.error('Error cleaning up thinking logs:', error);
+          }
+        }
+        
+        setThinkingLogs([]);
+        setCurrentQuerySessionId(null);
+      }, 1000);
     } finally {
       setLoading(false);
     }
@@ -400,17 +489,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             <div className={styles.assistantMessage}>
               <div className={styles.messageAvatar}>AI</div>
               <div className={styles.messageBubble}>
-
-                {/* GIF added above the loading text */}
-                <div className={styles.loadingGifContainer}>
-                  <img
-                    src="/animated_bot.gif"
-                    alt="Assistant thinking"
-                    className={styles.loadingGif}
-                  />
-                </div>
-
-                <div className={styles.loadingMessage}>The agent is thinking</div>
+                <ThinkingProcess logs={thinkingLogs} sessionId={currentQuerySessionId} />
               </div>
             </div>
           )}
