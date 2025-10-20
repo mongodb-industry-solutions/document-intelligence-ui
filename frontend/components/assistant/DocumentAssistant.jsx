@@ -70,7 +70,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
     setQuery("");
     setShowCitationsModal(false);
     setSelectedCitations([]);
-    
+
     // Clear session ID to start fresh
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('di_session_id');
@@ -299,9 +299,10 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <FileText size={24} color="#00684A" />
               </div>
               <div className={styles.reportInfo}>
-                <h4 className={styles.reportTitle}>Scheduled Report #1</h4>
-                <p className={styles.reportDescription}>Description</p>
+                <h4 className={styles.reportTitle}>Scheduled Report</h4>
+              
               </div>
+
 
               <InfoWizard
                 open={openDocsHelpModal}
@@ -312,10 +313,11 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 openModalIsButton={false}
               />
 
+
               <div className={styles.reportActions}>
                 <Button
                   size="default"
-                  variant="default"
+                  variant="primaryOutline"
                   className={styles.reportButton}
                   onClick={() => setShowReportModal(true)}
                 >
@@ -398,11 +400,16 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
             <div className={styles.assistantMessage}>
               <div className={styles.messageAvatar}>AI</div>
               <div className={styles.messageBubble}>
-                <div className={styles.loadingDots}>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+
+                {/* GIF added above the loading text */}
+                <div className={styles.loadingGifContainer}>
+                  <img
+                    src="/animated_bot.gif"
+                    alt="Assistant thinking"
+                    className={styles.loadingGif}
+                  />
                 </div>
+
                 <div className={styles.loadingMessage}>The agent is thinking</div>
               </div>
             </div>

@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
 }
 
 .modalContent {
@@ -21,13 +21,15 @@
   gap: 16px;
   overflow-y: auto;
   max-height: 90vh;
-  height: 500px; /* Set a fixed height */
-  min-height: 500px; /* Prevent shrinking */
- 
+  height: 500px;
+  /* Set a fixed height */
+  min-height: 500px;
+  /* Prevent shrinking */
+
 }
 
-.tabsContent{
- margin-right: 30px;
+.tabsContent {
+  margin-right: 30px;
 }
 
 .modalH3 {
@@ -43,28 +45,66 @@
   border-radius: 8px;
 }
 
-.htmlRender{
-    margin: unset;
-    font-family: 'Euclid Circular A', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #001E2B;
-    font-size: 13px;
-    line-height: 20px;
-    color: #001E2B;
-    font-weight: 400;
+.htmlRender {
+  margin: unset;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #001E2B;
+  font-size: 13px;
+  line-height: 20px;
+  color: #001E2B;
+  font-weight: 400;
 }
 
-.htmlRender a{
-    color: green;
-    text-decoration: underline;
+.htmlRender a {
+  color: green;
+  text-decoration: underline;
 }
 
-.htmlRender a:hover{
-    color: #00a35c;
+.htmlRender a:hover {
+  color: #00a35c;
 }
 
 .htmlRender mark {
   background-color: rgb(216, 214, 214);
   color: black;
+}
+
+.enlargedImageModal {
+  position: fixed;
+  /* Use fixed positioning */
+  top: 50%;
+  /* Center vertically */
+  left: 50%;
+  /* Center horizontally */
+  transform: translate(-50%, -50%);
+  /* Adjust for the element's own dimensions */
+  z-index: 2000;
+  /* Ensure it appears above other modals */
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  /* Use Flexbox */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+}
+
+.enlargedImage {
+  display: block;
+  /* Make the image a block element */
+  max-width: 100%;
+  /* Ensure it doesn't exceed the modal width */
+  max-height: 80vh;
+  /* Limit height to prevent overflow */
+  margin: 0 auto;
+  /* Center the image horizontally */
+}
+
+.modalImage:hover {
+  cursor: pointer;
 }
 
 
@@ -89,11 +129,13 @@
   }
 
   .modalH3 {
-    font-size: 1.2rem; /* Smaller heading for mobile */
+    font-size: 1.2rem;
+    /* Smaller heading for mobile */
   }
 
   .modalImage {
     width: 100%;
-    max-width: 100%; /* Ensure images are responsive */
+    max-width: 100%;
+    /* Ensure images are responsive */
   }
 }

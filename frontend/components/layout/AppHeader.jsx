@@ -51,7 +51,7 @@ function AppHeader() {
           <ClickableStepper currentStep={getCurrentStep()} />
           {showStartOverButton && (
             <Button
-              variant="default"
+              variant="dangerOutline"
               size="default"
               leftGlyph={<RotateCcw size={16} />}
               onClick={handleStartOver}

@@ -36,6 +36,7 @@
   padding: 2px;
   border: none;
   cursor: pointer;
+
 }
 
 @keyframes pulse {
@@ -76,7 +77,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: #FFFFFF;
-  padding: 24px;
+  padding: 15px 30px;
  border-bottom: 1px solid #E8EDEB;
 }
 
@@ -111,12 +112,6 @@
   font-weight: 500;
 }
 
-
-
-.newChatButton:hover {
-  background-color: #E8EDEB;
-  border-color: #D1D9D6;
-}
 
 .citationsButton {
   margin-top: 8px;
@@ -158,12 +153,11 @@
 .userMessage {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 16px;
 }
 
 .messageAvatar {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   background-color: #00684A;
   color: white;
   border-radius: 50%;
@@ -173,12 +167,13 @@
   font-weight: 600;
   font-size: 14px;
   flex-shrink: 0;
+
 }
 
 .messageBubble {
   background-color: #F5F6F7;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 7px 20px;
   max-width: 70%;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -212,17 +207,12 @@
   background-color: #03ea633f;
   color: #001E2B;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 7px 20px;
   max-width: 70%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
-.messageTime {
-  font-size: 11px;
-  color: #889397;
-  margin-top: 8px;
-  text-align: right;
-}
+
 
 
 .selectedList {
@@ -248,11 +238,10 @@
 .reportCard {
   background-color: #FFFFFF;
   border: 1px solid #E8EDEB;
-  padding: 10px 20px;
+  padding: 7px 20px;
   border-radius: 12px;
   width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
- 
   transition: opacity 0.2s ease;
 }
 
@@ -282,7 +271,6 @@
   font-size: 16px;
   font-weight: 600;
   color: #001E2B;
-  margin: 0 0 4px 0;
 }
 
 .reportDescription {
@@ -297,12 +285,8 @@
   flex-shrink: 0;
 }
 
-.reportButton {
-  height: 36px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+.reportButton {  
   padding: 0 20px !important;
-  border-radius: 8px !important;
 }
 
 .reportButton:disabled {
@@ -380,7 +364,7 @@
 
 /* Messages */
 .message {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -418,6 +402,7 @@
   font-size: 12px;
   color: #5C6C75;
   margin-top: 4px;
+  text-align: right;
 }
 
 .loadingMessage {
@@ -491,7 +476,7 @@
   max-width: max-content;
   min-height: auto;
   box-sizing: border-box;
-  padding: 10px 20px;
+  padding: 8px 20px;
 }
 
 /* Keep welcome layout stable regardless of selection */
@@ -640,4 +625,16 @@
 
 .agenticMessage .messageBubble {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.loadingGifContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.loadingGif {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
 }
