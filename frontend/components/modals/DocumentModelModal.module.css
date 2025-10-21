@@ -1,0 +1,47 @@
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 900px;
+  width: 55vw;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  max-height: 80vh;
+}
+
+.title {
+  margin: 0;
+  color: #001E2B;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #5C6C75;
+  margin-top: -8px;
+}
+
+.subtitle strong {
+  color: #001E2B;
+  font-weight: 600;
+}
+
+.codeContainer {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  background-color: #F9FAFA;
+  max-height: 65vh;
+}
+
