@@ -4,12 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import Button from "@leafygreen-ui/button";
 import Checkbox from "@leafygreen-ui/checkbox";
+import IconButton from "@leafygreen-ui/icon-button";
+import Tooltip from "@leafygreen-ui/tooltip";
+import Icon from "@leafygreen-ui/icon";
 import { useToast } from "@/components/toast/Toast";
 import { RefreshCw, Upload, X, Eye } from "lucide-react";
 import styles from "./DocumentSidebar.module.css";
 import UploadModal from "@/components/modals/UploadModal";
 import DeleteConfirmationModal from "@/components/modals/DeleteConfirmationModal";
+import DocumentModelModal from "@/components/modals/DocumentModelModal";
 import InfoWizard from "@/components/InfoWizard/InfoWizard";
+import DocumentsAPIClient from "@/utils/api/documents/api-client";
 
 const DocumentSidebar = ({
   documents,
@@ -25,6 +30,9 @@ const DocumentSidebar = ({
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
+  const [showModelModal, setShowModelModal] = useState(false);
+  const [selectedDocumentData, setSelectedDocumentData] = useState(null);
+  const [selectedDocumentName, setSelectedDocumentName] = useState("");
   const { pushToast } = useToast();
 
   const formatFileSize = (sizeInMB) => {
@@ -80,6 +88,24 @@ const DocumentSidebar = ({
     
     // Open document in new tab for preview
     window.open(viewUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleShowDocModel = async (doc) => {
+    try {
+      console.log('📄 Fetching raw document model for:', doc.document_id);
+      const rawDoc = await DocumentsAPIClient.getRawDocument(doc.document_id);
+      setSelectedDocumentData(rawDoc);
+      setSelectedDocumentName(doc.document_name);
+      setShowModelModal(true);
+    } catch (error) {
+      console.error('Error fetching document model:', error);
+      pushToast({
+        variant: 'error',
+        title: 'Failed to load document model',
+        description: 'Unable to fetch the document model. Please try again.',
+        dismissible: true,
+      });
+    }
   };
 
   const handleDeleteConfirm = async () => {
@@ -233,20 +259,51 @@ const DocumentSidebar = ({
                     <span className={styles.fileExtension}>
                       .{doc.file_extension}
                     </span>
-                    
-                    {/* View Document Button - inline with filename */}
-                    <button
-                      className={styles.viewButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleViewDocument(doc.document_id);
-                      }}
-                      aria-label="View document"
-                      title="View document"
-                    >
-                      <Eye size={16} />
-                    </button>
                   </div>
+                  
+                  {/* Action buttons - positioned separately */}
+                  <div className={styles.actionButtons}>
+                    {/* View Document Button */}
+                    <Tooltip
+                      align="top"
+                      justify="middle"
+                      trigger={
+                        <button
+                          className={styles.viewButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewDocument(doc.document_id);
+                          }}
+                          aria-label="View Full Document"
+                        >
+                          <Eye size={18} />
+                        </button>
+                      }
+                    >
+                      View Full Document
+                    </Tooltip>
+                    
+                    {/* Doc Model Button */}
+                    <Tooltip
+                      align="top"
+                      justify="middle"
+                      trigger={
+                        <IconButton
+                          aria-label="Doc Model"
+                          className={styles.iconButton}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShowDocModel(doc);
+                          }}
+                        >
+                          <Icon glyph="CurlyBraces" />
+                        </IconButton>
+                      }
+                    >
+                      Doc Model
+                    </Tooltip>
+                  </div>
+                  
                   <div className={styles.documentMeta}>
                     <span className={styles.fileSize}>
                       {formatFileSize(doc.file_size_mb)}
@@ -294,6 +351,19 @@ const DocumentSidebar = ({
           onClose={handleDeleteCancel}
           onConfirm={handleDeleteConfirm}
           documentName={documentToDelete.document_name}
+        />
+      )}
+
+      {showModelModal && selectedDocumentData && (
+        <DocumentModelModal
+          isOpen={showModelModal}
+          onClose={() => {
+            setShowModelModal(false);
+            setSelectedDocumentData(null);
+            setSelectedDocumentName("");
+          }}
+          documentData={selectedDocumentData}
+          documentName={selectedDocumentName}
         />
       )}
     </>
