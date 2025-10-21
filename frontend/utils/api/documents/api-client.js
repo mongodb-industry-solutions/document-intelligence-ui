@@ -76,6 +76,58 @@ class DocumentsAPIClient {
   }
 
   /**
+   * Get raw MongoDB document for display purposes
+   * @param {string} documentId - Document ID
+   * @returns {Promise<Object>} Raw MongoDB document
+   */
+  static async getRawDocument(documentId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}/raw`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to fetch raw document');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching raw document:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get raw MongoDB chunk for display purposes
+   * @param {string} chunkId - Chunk's MongoDB _id
+   * @returns {Promise<Object>} Raw MongoDB chunk document
+   */
+  static async getRawChunk(chunkId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/documents/chunks/${chunkId}/raw`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to fetch raw chunk');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching raw chunk:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Delete a document
    * @param {string} documentId - Document ID to delete
    * @returns {Promise<Object>} Delete response

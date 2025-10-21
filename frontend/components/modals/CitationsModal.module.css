@@ -156,6 +156,9 @@
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #E8EDEB;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .viewDocButton {
@@ -182,4 +185,27 @@
 
 .viewDocButton:active {
   transform: translateY(0);
+}
+
+.iconButton {
+  background: none !important;
+  border: none !important;
+  padding: 6px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  color: #00684A !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  opacity: 0.7 !important;
+  height: auto !important;
+  min-height: auto !important;
+  margin-left: 8px !important;
+}
+
+.iconButton:hover {
+  opacity: 1 !important;
+  background-color: #E8F5E9 !important;
+  transform: scale(1.1);
 }

@@ -123,10 +123,12 @@
 }
 
 .documentItem {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
+  padding-right: 90px; /* Space for action buttons */
   background-color: #F9FAFA;
   border-radius: 8px;
   border: 1px solid #E8EDEB;
@@ -146,13 +148,16 @@
 .documentInfo {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .viewButton {
   flex-shrink: 0;
   background: none;
   border: none;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: 4px;
   cursor: pointer;
   color: #00684A;
@@ -161,7 +166,6 @@
   justify-content: center;
   transition: all 0.2s ease;
   opacity: 0.6;
-  margin-left: 6px;
 }
 
 .viewButton:hover {
@@ -171,6 +175,43 @@
 }
 
 .viewButton:active {
+  transform: scale(1.05);
+}
+
+.actionButtons {
+  position: absolute;
+  top: 16px; /* Align with top padding of card */
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconButton {
+  background: none !important;
+  border: none !important;
+  padding: 6px 8px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  color: #00684A !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  opacity: 0.6 !important;
+  height: auto !important;
+  min-height: auto !important;
+  font-size: 18px !important;
+}
+
+.iconButton:hover {
+  opacity: 1 !important;
+  background-color: #E8F5E9 !important;
+  transform: scale(1.15);
+}
+
+.iconButton:active {
   transform: scale(1.05);
 }
 
