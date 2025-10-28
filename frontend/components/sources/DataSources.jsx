@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "./DataSources.module.css";
 import Button from "@leafygreen-ui/button";
 import Card from "@leafygreen-ui/card";
+import Checkbox from "@leafygreen-ui/checkbox";
 import { RefreshCw } from "lucide-react";
 import DocumentsAPIClient from "@/utils/api/documents/api-client";
 import { useSelection } from "@/contexts/SelectionContext";
@@ -16,15 +17,8 @@ import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkT
 const DataSources = ({ onContinue, onBack }) => {
   const router = useRouter();
   const { useCase } = useSelection();
-  const [selectedSources, setSelectedSources] = useState([]);
-  const [selectedExample, setSelectedExample] = useState(null);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [workflow, setWorkflow] = useState(null); // { id, status }
-  const [logs, setLogs] = useState([]);
-  const [canContinue, setCanContinue] = useState(false);
-  const [openHelpModal, setOpenHelpModal] = useState(false);
-
-
+  
+  // Define data sources first so we can use it for initial state
   const dataSources = [
     {
       id: "local",
@@ -42,6 +36,15 @@ const DataSources = ({ onContinue, onBack }) => {
       icon: "drive.png"
     }
   ];
+  
+  // Initialize with ALL sources selected by default
+  const [selectedSources, setSelectedSources] = useState(dataSources.map(s => s.id));
+  const [selectedExample, setSelectedExample] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [workflow, setWorkflow] = useState(null); // { id, status }
+  const [logs, setLogs] = useState([]);
+  const [canContinue, setCanContinue] = useState(false);
+  const [openHelpModal, setOpenHelpModal] = useState(false);
 
   // Derived
   const sourcesSelected = selectedSources.length > 0;
@@ -49,6 +52,10 @@ const DataSources = ({ onContinue, onBack }) => {
   const handleSourceSelect = (sourceId) => {
     setSelectedSources(prev => {
       if (prev.includes(sourceId)) {
+        // Prevent deselecting if it's the last source (must have at least 1)
+        if (prev.length === 1) {
+          return prev; // Keep the last source selected
+        }
         // Remove if already selected
         return prev.filter(id => id !== sourceId);
       } else {
@@ -57,6 +64,20 @@ const DataSources = ({ onContinue, onBack }) => {
       }
     });
     setSelectedExample(null); // Clear example selection when source is selected
+  };
+
+  // Select All checkbox handlers
+  const allSelected = dataSources.length > 0 && selectedSources.length === dataSources.length;
+  const someSelected = selectedSources.length > 0 && selectedSources.length < dataSources.length;
+
+  const handleSelectAllClick = () => {
+    if (allSelected) {
+      // Deselect all except the first one (keep at least 1 selected)
+      setSelectedSources([dataSources[0].id]);
+    } else {
+      // Select all sources
+      setSelectedSources(dataSources.map(s => s.id));
+    }
   };
 
   const handleExampleSelect = (exampleId) => {
@@ -182,17 +203,13 @@ const DataSources = ({ onContinue, onBack }) => {
             openModalIsButton={false}
           />
 
-          <Button
-            variant="primaryOutline"
-            
-            onClick={() => setSelectedSources(dataSources.map((s) => s.id))}
-            disabled={selectedSources.length === dataSources.length}
-            className={styles.selectAllButton}
-          >
-            Select All Sources
-          </Button>
-
-
+          <Checkbox
+            checked={allSelected}
+            indeterminate={someSelected}
+            onChange={handleSelectAllClick}
+            label="Select All Sources"
+            className={styles.selectAllCheckbox}
+          />
         </div>
        {/*  <p className={styles.sourcesHint}>You can select multiple sources</p> */}
 

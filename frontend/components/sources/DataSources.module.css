@@ -243,7 +243,10 @@
   margin-left: 10px;
 }
 
-
+.selectAllCheckbox {
+  margin-left: 10px;
+  cursor: pointer;
+}
 
 /* Responsive design */
 @media (max-width: 1024px) {
