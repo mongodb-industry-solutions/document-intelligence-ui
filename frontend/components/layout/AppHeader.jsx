@@ -16,9 +16,16 @@ function AppHeader() {
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
+    
+    // Define acronyms that should be uppercase
+    const acronyms = new Set(['kyc', 'api', 'roi', 'kyb', 'aml', 'gdpr']);
+    
     return useCase
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        const lowerWord = word.toLowerCase();
+        return acronyms.has(lowerWord) ? lowerWord.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1);
+      })
       .join(' ');
   };
 

@@ -1,16 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { Search, FileSearch, CheckCircle, RotateCcw, PenLine, Sparkles } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Search, FileSearch, CheckCircle, RotateCcw, PenLine, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import styles from './ThinkingProcess.module.css';
 
 const ThinkingProcess = ({ logs = [], sessionId }) => {
   const stepsEndRef = useRef(null);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   // Auto-scroll to latest step
   useEffect(() => {
     stepsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs]);
+
+  // Filter out repetitive logs that don't add value for users
+  const shouldDisplayLog = (message) => {
+    // Filter out persona and memory logs
+    if (message.includes('Using persona for use case:')) return false;
+    if (message.includes('Using memory with thread_id:')) return false;
+    return true;
+  };
+
+  // Filter logs to show only key decision-making steps
+  const filteredLogs = logs.filter(log => shouldDisplayLog(log.message));
 
   const getStepIcon = (stepType) => {
     switch (stepType) {
@@ -59,11 +71,21 @@ const ThinkingProcess = ({ logs = [], sessionId }) => {
           className={styles.thinkingGif}
         />
         <span className={styles.thinkingTitle}>Agent is thinking...</span>
+        
+        {filteredLogs.length > 0 && (
+          <button 
+            className={styles.toggleButton}
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-label={isExpanded ? "Collapse thinking process" : "Expand thinking process"}
+          >
+            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
+        )}
       </div>
       
-      {logs.length > 0 && (
+      {isExpanded && filteredLogs.length > 0 && (
         <div className={styles.thinkingSteps}>
-          {logs.map((log, idx) => (
+          {filteredLogs.map((log, idx) => (
             <div key={idx} className={getStepClass(log.step_type)}>
               {getStepIcon(log.step_type)}
               <span className={styles.stepMessage}>
