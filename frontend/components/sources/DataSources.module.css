@@ -232,6 +232,19 @@
   cursor: not-allowed;
 }
 
+.sourcesHeaderRow {
+  display: flex;
+ 
+  justify-content: space-between;
+ 
+}
+
+.selectAllButton{
+  margin-left: 10px;
+}
+
+
+
 /* Responsive design */
 @media (max-width: 1024px) {
   .sourcesGrid {
