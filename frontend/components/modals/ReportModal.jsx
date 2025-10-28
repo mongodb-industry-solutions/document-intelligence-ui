@@ -14,6 +14,22 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
   const [downloading, setDownloading] = useState(false);
   const { pushToast } = useToast();
 
+  // Format use case for display, handling acronyms properly
+  const formatUseCaseTitle = (useCaseStr) => {
+    if (!useCaseStr) return 'Scheduled';
+    
+    // Define acronyms that should be uppercase
+    const acronyms = new Set(['kyc', 'api', 'roi', 'kyb', 'aml', 'gdpr']);
+    
+    return useCaseStr
+      .split('_')
+      .map(word => {
+        const lowerWord = word.toLowerCase();
+        return acronyms.has(lowerWord) ? lowerWord.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  };
+
   useEffect(() => {
     if (isOpen && industry && useCase) {
       fetchLatestReport();
@@ -233,7 +249,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
               <FileText size={24} color="#00684A" />
               <div>
                 <h2 className={styles.title}>
-                  {useCase ? useCase.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Scheduled'} Report
+                  {formatUseCaseTitle(useCase)} Report
                 </h2>
                 <p className={styles.subtitle}>
                   {industry ? `${industry.toUpperCase()} Industry` : 'Automated Report'}
@@ -299,10 +315,17 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
             <div className={styles.reportInfo}>
               <div className={styles.reportHeader}>
                 <div className={styles.reportIcon}>
+                  {/* Always use standard green color regardless of report status */}
+                  <FileText size={32} color="#00684A" />
+                  {/* Commented out conditional color per stakeholder request
                   <FileText size={32} color={report.status === "seed" ? "#9CA3AF" : "#00684A"} />
+                  */}
                 </div>
                 <div className={styles.reportDetails}>
                   <p className={styles.reportDescription}>
+                    {/* Always show the standard description regardless of report status */}
+                    Automated report generated from document analysis
+                    {/* Commented out fallback-specific UI elements per stakeholder request
                     {report.status === "seed" 
                       ? "Using fallback report (generated report unavailable)" 
                       : "Automated report generated from document analysis"
@@ -310,6 +333,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                     {report.status === "seed" && (
                       <span className={styles.fallbackBadge}>Fallback</span>
                     )}
+                    */}
                   </p>
                 </div>
               </div>
@@ -318,14 +342,19 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                 <div className={styles.metaItem}>
                   <Calendar size={16} color="#718096" />
                   <span>
+                    {/* Always show "Generated:" label */}
+                    Generated: {formatDate(report.generated_at)}
+                    {/* Commented out conditional label per stakeholder request
                     {report.status === "seed" ? "Available: " : "Generated: "}
                     {formatDate(report.generated_at)}
+                    */}
                   </span>
                 </div>
                 <div className={styles.metaItem}>
                   <FileText size={16} color="#718096" />
                   <span>Size: {formatFileSize(report.file_size_kb)}</span>
                 </div>
+                {/* Commented out fallback warning message per stakeholder request
                 {report.status === "seed" && (
                   <div className={styles.metaItem}>
                     <AlertCircle size={16} color="#F59E0B" />
@@ -334,6 +363,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                     </span>
                   </div>
                 )}
+                */}
               </div>
 
               <div className={styles.actions}>
@@ -358,6 +388,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                   {downloading ? 'Downloading...' : 'Download Report'}
                 </Button>
                 
+                {/* Commented out "Generate Fresh Report" button per stakeholder request
                 {report.status === "seed" && (
                   <Button
                     variant="default"
@@ -369,6 +400,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
                     {loading ? "Generating..." : "Generate Fresh Report"}
                   </Button>
                 )}
+                */}
               </div>
             </div>
           )}

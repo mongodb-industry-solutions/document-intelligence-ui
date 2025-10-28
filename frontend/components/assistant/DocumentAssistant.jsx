@@ -43,9 +43,16 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
 
   const formatUseCase = (useCase) => {
     if (!useCase) return '';
+    
+    // Define acronyms that should be uppercase
+    const acronyms = new Set(['kyc', 'api', 'roi', 'kyb', 'aml', 'gdpr']);
+    
     return useCase
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map(word => {
+        const lowerWord = word.toLowerCase();
+        return acronyms.has(lowerWord) ? lowerWord.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1);
+      })
       .join(' ');
   };
 
@@ -102,10 +109,18 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   };
 
   //Copy answers
-  const handleCopy = (text) => {
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
+
+  const handleCopy = (text, messageId) => {
     navigator.clipboard.writeText(text)
       .then(() => {
         console.log("Copied to clipboard:", text);
+        // Show visual feedback
+        setCopiedMessageId(messageId);
+        // Reset after 2 seconds
+        setTimeout(() => {
+          setCopiedMessageId(null);
+        }, 2000);
       })
       .catch((err) => {
         console.error("Failed to copy: ", err);
@@ -446,11 +461,11 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 {message.type === 'assistant' ? (
                   <div className={styles.messageBubbleContent}>
                     <IconButton
-                      aria-label="Copy"
-                      className={styles.copyButton}
-                      onClick={() => handleCopy(message.content)}
+                      aria-label={copiedMessageId === message.messageId ? "Copied!" : "Copy"}
+                      className={`${styles.copyButton} ${copiedMessageId === message.messageId ? styles.copyButtonActive : ''}`}
+                      onClick={() => handleCopy(message.content, message.messageId)}
                     >
-                      <Icon glyph="Copy" />
+                      <Icon glyph={copiedMessageId === message.messageId ? "Checkmark" : "Copy"} />
                     </IconButton>
                     <Typewriter
                       text={message.content}

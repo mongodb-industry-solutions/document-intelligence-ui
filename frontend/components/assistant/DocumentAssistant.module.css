@@ -23,12 +23,13 @@
 
 .messageBubbleContent {
   position: relative;
+  padding-right: 40px; /* Add space for the copy button to prevent text overlap */
 }
 
 .copyButton {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 4px;
+  right: 4px;
   z-index: 2;
   background: white;
   border-radius: 50%;
@@ -36,7 +37,19 @@
   padding: 2px;
   border: none;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
 
+.copyButton:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.copyButtonActive {
+  background: #00ED64 !important;
+  color: white !important;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 237, 100, 0.3);
 }
 
 @keyframes pulse {
@@ -403,6 +416,7 @@
   color: #5C6C75;
   margin-top: 4px;
   text-align: right;
+  padding-right: 40px; /* Add padding to avoid overlap with copy button */
 }
 
 .loadingMessage {
