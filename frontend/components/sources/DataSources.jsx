@@ -86,13 +86,13 @@ const DataSources = ({ onContinue, onBack }) => {
     setIsSyncing(true);
     setCanContinue(false);
     setLogs([]);
-    
+
     // Log Backend API URL being used
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     console.log('🔗 Source Sync - Backend API URL:', backendUrl);
     console.log('📋 Use Case:', useCase);
     console.log('📂 Sources:', selectedSources);
-    
+
     appendLog(`Starting ingestion for use case "${useCase}" with sources: ${selectedSources.join(', ')}`);
     try {
       const start = await DocumentsAPIClient.startIngestion({
@@ -171,18 +171,33 @@ const DataSources = ({ onContinue, onBack }) => {
       </div>
 
       <div className={styles.sourcesSection}>
-       
-       <InfoWizard
-          open={openHelpModal}
-          setOpen={setOpenHelpModal}
-          tooltipText="Tell me more!"
-          iconGlyph="Wizard"
-          sections={sourcesTalkTrack}
-          openModalIsButton={false}
-        />
-      
 
-        <p className={styles.sourcesHint}>You can select multiple sources</p>
+        <div className={styles.sourcesHeaderRow}>
+          <InfoWizard
+            open={openHelpModal}
+            setOpen={setOpenHelpModal}
+            tooltipText="How it works?"
+            iconGlyph="Wizard"
+            sections={sourcesTalkTrack}
+            openModalIsButton={false}
+          />
+
+          <Button
+            variant="primaryOutline"
+            
+            onClick={() => setSelectedSources(dataSources.map((s) => s.id))}
+            disabled={selectedSources.length === dataSources.length}
+            className={styles.selectAllButton}
+          >
+            Select All Sources
+          </Button>
+
+
+        </div>
+       {/*  <p className={styles.sourcesHint}>You can select multiple sources</p> */}
+
+
+
         <div className={styles.sourcesGrid}>
           {dataSources.map((source) => (
             <div
@@ -207,8 +222,8 @@ const DataSources = ({ onContinue, onBack }) => {
 
       {sourcesSelected && (
         <div className={styles.examplesSection}>
-           
-       
+
+
           <div className={styles.sectionHeader}>
             <div className={styles.sectionHeaderRow}>
               <div className={styles.sectionHeaderText}>
