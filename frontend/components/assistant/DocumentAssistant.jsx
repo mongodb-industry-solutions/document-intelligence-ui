@@ -343,7 +343,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
                 <InfoWizard
                   open={openAssistantHelpModal}
                   setOpen={setOpenAssistantHelpModal}
-                  tooltipText="Tell me more!"
+                  tooltipText="How it works?"
                   iconGlyph="Wizard"
                   sections={assistantsTalkTrack}
                   openModalIsButton={true}
@@ -396,7 +396,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
               <InfoWizard
                 open={openDocsHelpModal}
                 setOpen={setOpenDocsHelpModal}
-                tooltipText="Tell me more!"
+                tooltipText="How it works?"
                 iconGlyph="Wizard"
                 sections={docsTalkTrack}
                 openModalIsButton={false}

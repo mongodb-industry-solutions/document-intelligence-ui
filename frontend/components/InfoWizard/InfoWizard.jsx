@@ -14,7 +14,7 @@ import Tooltip from "@leafygreen-ui/tooltip";
 const InfoWizard = ({
   open,
   setOpen,
-  tooltipText = "Learn more",
+  tooltipText = "How it works?",
   iconGlyph = "Wizard",
   openModalIsButton = true,
   sections = [],
