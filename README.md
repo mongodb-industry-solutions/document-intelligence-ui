@@ -1,427 +1,151 @@
 # Document Intelligence UI
 
-Document Intelligence UI is the graphical user interface for our demo document intelligence application.
+Frontend for the FSI Document Intelligence demo application showcasing AI-powered document processing with multi-agent orchestration, agentic RAG, and automated report generation.
 
-## 🏗️ System Architecture
+> **📘 Backend Repository**: For complete backend architecture, API documentation, see [mongodb-industry-solutions/document-intelligence](https://github.com/mongodb-industry-solutions/document-intelligence)
 
-### High-Level Architecture
+## 🏗️ System Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                        MONGODB DOCUMENT INTELLIGENCE SYSTEM                         │
-├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                              DOCUMENT SOURCES                               │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │     📁 Local Files        ☁️ AWS S3 Bucket        📊 Google Drive           │    │
-│  │       (PDF/DOC/DOCX)         (Cloud Storage)      (Public Folders)          │    │
-│  │             ↓                       ↓                      ↓                │    │
-│  └─────────────┼───────────────────────┼──────────────────────┼────────────────┘    │
-│                └───────────────┬───────┴──────────────────────┘                     │
-│                                ↓                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                    PART 1: HIERARCHICAL MULTI-AGENT ORCHESTRATION           │    │
-│  │                           (Document Ingestion Pipeline)                     │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │    ┌──────────────────────────────────────────────────────────────────┐     │    │
-│  │    │                    🧠 SUPERVISOR AGENT                           │     │    │
-│  │    │              (Central Coordinator & Router)                      │     │    │
-│  │    └─────────────────────────┬────────────────────────────────────────┘     │    │
-│  │                              ↓                                              │    │
-│  │    ┌──────────────┬──────────────┬──────────────────────────┬               │    │
-│  │    ↓              ↓              ↓                          ↓               │    │
-│  │ 📂 Scanner    🔍 Evaluator   📸 Extractor            💾 Processor           │    │
-│  │  (Discover)    (Relevance)    (Vision AI)           (Chunk/Embed)           │    │
-│  │                                                           ↓                 │    │
-│  └───────────────────────────────────────────────────────────┼──────────────────────│
-│                                                              ↓                      │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                    PART 2: AGENTIC RAG SYSTEM                               │    │
-│  │                        (Q&A & Query Processing)                             │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │    ┌──────────────────────────────────────────────────────────────────┐     │    │
-│  │    │                🤖 AGENTIC RAG WORKFLOW                           │     │    │
-│  │    │                                                                  │     │    │
-│  │    │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │     │    │
-│  │    │  │   Query     │    │  Document   │    │   Query     │           │     │    │
-│  │    │  │ Generator   │───▶│  Grader     │───▶│  Rewriter   │           │     │    │
-│  │    │  │             │    │             │    │             │           │     │    │
-│  │    │  └─────────────┘    └─────────────┘    └─────────────┘           │     │    │
-│  │    │         │                   │                   │                │     │    │
-│  │    │         ▼                   ▼                   ▼                │     │    │
-│  │    │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │     │    │
-│  │    │  │   Direct    │    │   Answer    │    │   Loop      │           │     │    │
-│  │    │  │  Response   │    │ Generator   │    │  Back to    │           │     │    │
-│  │    │  │             │    │             │    │  Query Gen  │           │     │    │
-│  │    │  └─────────────┘    └─────────────┘    └─────────────┘           │     │    │
-│  │    └──────────────────────────────────────────────────────────────────┘     │    │
-│  └─────────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                          PART 3: SCHEDULED REPORTS                          │    │
-│  │                        (Automated Report Generation)                        │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │    ┌──────────────────────────────────────────────────────────────────┐     │    │
-│  │    │                📊 SCHEDULED REPORT WORKFLOW                      │     │    │
-│  │    │                                                                  │     │    │
-│  │    │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │     │    │
-│  │    │  │   Section   │    │  Vector     │    │   LLM       │           │     │    │
-│  │    │  │  Specific   │───▶│  Search     │───▶│ Content     │           │     │    │
-│  │    │  │   Query     │    │  (Targeted) │    │ Generation  │           │     │    │
-│  │    │  │             │    │             │    │             │           │     │    │
-│  │    │  └─────────────┘    └─────────────┘    └─────────────┘           │     │    │
-│  │    │         │                   │                   │                │     │    │
-│  │    │         ▼                   ▼                   ▼                │     │    │
-│  │    │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │     │    │
-│  │    │  │  Context    │    │   PDF       │    │  Fallback   │           │     │    │
-│  │    │  │Accumulation │    │ Generation  │    │  Mechanism  │           │     │    │
-│  │    │  │             │    │             │    │             │           │     │    │
-│  │    │  └─────────────┘    └─────────────┘    └─────────────┘           │     │    │
-│  │    └──────────────────────────────────────────────────────────────────┘     │    │
-│  └─────────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                           🔧 CORE AI SERVICES                               │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │  ┌─────────────────┐    ┌─────────────────┐    ┌──────────────────────┐     │    │
-│  │  │  AWS Bedrock    │    │  VoyageAI       │    │  MongoDB Atlas       │     │    │
-│  │  │                 │    │                 │    │                      │     │    │
-│  │  │Claude 3.5 Sonnet v2│◄──┤ voyage-context-3│◄───┤  Vector Search     │     │    │
-│  │  │ (Vision AI)     │    │ (Embeddings)    │    │  (HNSW Index)        │     │    │
-│  │  │ NO OCR!         │    │ Context-Aware   │    │  Document Storage    │     │    │
-│  │  └─────────────────┘    └─────────────────┘    └──────────────────────┘     │    │
-│  │         ↑                        ↑                        ↑                 │    │
-│  └─────────┼────────────────────────┼────────────────────────┼─────────────────┘    │
-│            └────────────────────────┼────────────────────────┘                      │
-│                                     ↓                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                         🌐 API LAYER (FastAPI)                              │    │
-│  ├─────────────────────────────────────────────────────────────────────────────┤    │
-│  │                                                                             │    │
-│  │   /api/ingestion/start     →  Start document processing workflow            │    │
-│  │   /api/ingestion/status    →  Monitor agentic processing progress           │    │
-│  │   /api/qa/query            →  Q&A with chunk-level references               │    │
-│  │   /api/qa/documents        →  Multi-document context selection              │    │
-│  │   /api/reports/latest      →  Get latest scheduled report                   │    │
-│  │   /api/reports/generate    →  Generate ad-hoc reports                      │    │
-│  │                                                                             │    │
-│  └──────────────────────────────────┬──────────────────────────────────────────┘    │
-│                                                                                     │
-└─────────────────────────────────────────────────────────────────────────────────────┘
+The Document Intelligence system demonstrates three architectural patterns powered by MongoDB Atlas:
 
-KEY FEATURES:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 Smart Ingestion: Context-aware assessment based on industry and topic
-👁️ NO OCR: Pure vision-based understanding using Claude 3.5 Sonnet v2
-🔍 Context-Aware: Each chunk knows the full document context (voyage-context-3)
-📍 Visual Elements: Enhanced descriptions for charts, tables, and diagrams
-🤖 Multi-Agent: Specialized agents for each task with LangGraph orchestration
-🗄️ Multi-Source: Supports local files, AWS S3, and Google Drive with unified workflow
-🔒 Deduplication: Intelligent caching prevents reprocessing
-🏭 Industry-Specific: Configurable mappings for different industries
-🔄 Agentic RAG: Self-correcting Q&A with document grading and query rewriting
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+![High Level Architecture](frontend/public/diagrams/1_high_level_architecture.png)
 
-## 📁 Project Structure
+### **Part 1: Supervisor Multi-Agent Orchestration (Ingestion)**
+
+Specialized agents coordinate document ingestion from multiple sources (Local files, AWS S3, Google Drive) through a supervisor pattern.
+
+![Supervisor Multi-Agent Architecture](frontend/public/diagrams/2_part1_ingestion_multiagent_supervisor.png)
+![Supervisor Pattern Explanation](frontend/public/diagrams/3_part1_multiagent_supervisor_pattern_explanation.png)
+
+### **Part 2: Agentic RAG System (Q&A)**
+
+Self-correcting retrieval with document grading, query rewriting, and conversation memory via MongoDB checkpointing.
+
+![Agentic RAG Architecture](frontend/public/diagrams/4_part2_QandA_agentic_rag.png)
+![Agentic RAG Pattern Explanation](frontend/public/diagrams/5_part2_agentic_rag_pattern_explanation.png)
+
+### **Part 3: Scheduled Reports (Automation)**
+
+Weekly automated report generation using section-specific semantic search over ingested documents.
+
+![Scheduled Reports Architecture](frontend/public/diagrams/6_part3_scheduled_reports.png)
+
+**Key Technologies:**
+- **Frontend**: Next.js 15, React 19, LeafyGreen UI
+- **Backend**: FastAPI, LangGraph, MongoDB Atlas
+- **AI Services**: AWS Bedrock (Claude 3.5 Sonnet v2), VoyageAI (voyage-context-3)
+
+## 📁 Frontend Structure
 
 ```
-├── frontend/                    # Next.js Frontend
-│   ├── app/                   # Next.js 15 App Router
-│   │   ├── use-case/         # Use case selection page
-│   │   │   └── page.js      
-│   │   ├── sources/          # Data sources selection page
-│   │   │   └── page.js      
-│   │   ├── document-intelligence/ # Main document Q&A page
-│   │   │   └── page.js      
-│   │   ├── globals.css       # Global styles
-│   │   ├── layout.js        # Root layout with SelectionProvider
-│   │   ├── page.js          # Landing page (redirects to /use-case)
-│   │   └── page.module.css  # Page-specific styles
-│   ├── components/           # React Components
-│   │   ├── assistant/       # Document assistant components
-│   │   │   ├── DocumentAssistant.jsx
-│   │   │   └── DocumentAssistant.module.css
-│   │   ├── common/          # Common reusable components
-│   │   │   └── Typewriter.jsx
-│   │   ├── documents/       # Document management components
-│   │   │   ├── DocumentSidebar.jsx
-│   │   │   └── DocumentSidebar.module.css
-│   │   ├── layout/          # Layout components
-│   │   │   ├── AppHeader.jsx
-│   │   │   └── AppHeader.module.css
-│   │   ├── modals/          # Modal components
-│   │   │   ├── UploadModal.jsx
-│   │   │   └── UploadModal.module.css
-│   │   ├── progress/        # Progress indicator
-│   │   │   ├── ProgressIndicator.jsx
-│   │   │   └── ProgressIndicator.module.css
-│   │   ├── sources/         # Data sources components
-│   │   │   ├── DataSources.jsx
-│   │   │   └── DataSources.module.css
-│   │   └── use-case/        # Use case selection components
-│   │       ├── UseCaseSelection.jsx
-│   │       └── UseCaseSelection.module.css
-│   ├── contexts/             # React Context providers
-│   │   └── SelectionContext.js # Global state for selections
-│   ├── utils/               # Utilities
-│   │   └── api/            # API client services
-│   │       ├── documents/  
-│   │       │   └── api-client.js
-│   │       └── upload/     
-│   │           └── api-client.js
-│   ├── public/              # Static assets
-│   │   ├── PDF_file_icon.png    # PDF file icon
-│   │   └── DOC_or_DOCX_file_icon.png # DOC/DOCX file icon
-│   ├── ui_prototype/        # UI design references
-│   ├── playwright.config.js # Playwright configuration
-│   ├── jsconfig.json        # JavaScript configuration
-│   ├── next.config.mjs      # Next.js configuration
-│   ├── package.json         # Node.js dependencies
-│   ├── README.md            # Frontend documentation
-│   └── PLAYWRIGHT.md        # Testing documentation
-│
-├── docker-compose.yml          # Docker services definition
-├── Dockerfile.frontend        # Frontend container definition
-└── makefile                  # Build and run commands
+frontend/
+├── app/                        # Next.js 15 App Router
+│   ├── use-case/              # FSI use case selection
+│   ├── sources/               # Data source selection + talk tracks
+│   ├── document-intelligence/ # Main Q&A interface
+│   ├── layout.js              # Root layout with SelectionProvider
+│   └── page.js                # Landing page
+├── components/                 # React Components
+│   ├── assistant/             # DocumentAssistant with Agentic RAG
+│   ├── documents/             # DocumentSidebar, DocumentList
+│   ├── modals/                # Upload, Citations, Delete modals
+│   ├── sources/               # DataSources selector
+│   ├── use-case/              # UseCaseSelection cards
+│   └── InfoWizard/            # Talk track wizard
+├── contexts/                   # React Context
+│   └── SelectionContext.js    # Global state management
+├── utils/api/                  # API Clients
+│   ├── documents/             # Documents & ingestion API
+│   ├── reports/               # Reports API
+│   └── upload/                # Upload API
+└── public/diagrams/            # Architecture diagrams (PNG)
 ```
 
-## 🔧 Environment Setup
+## 🚀 Getting Started
 
-### Frontend (.env.local)
-Required environment variables:
+### Prerequisites
+- **Node.js** >= 22.0.0
+- **Backend API** running (see [backend repository](https://github.com/mongodb-industry-solutions/document-intelligence))
+
+### Installation
+
 ```bash
-# Backend API Configuration
+cd frontend
+npm install
+```
+
+### Environment Setup
+
+Create `frontend/.env.local`:
+
+```bash
+# Backend API URL (FastAPI)
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Note: Frontend connects to the FastAPI backend, not directly to MongoDB.
+> **Note**: The frontend communicates only with the FastAPI backend, not directly with MongoDB.
 
-## 📄 MongoDB Collections
+## 🛠️ Development
 
-The system uses the following MongoDB collections:
+### Run Development Server
 
-1. **workflows**: Tracks ingestion workflow execution
-   - `workflow_id`: Unique identifier for the workflow
-   - `source_paths`: Array of source paths being processed
-   - `triggered_at`: Timestamp when workflow started
-
-2. **assessments**: Document evaluation results
-   - `document_id`: Unique document identifier
-   - `document_path`: Full path with source prefix (e.g., `@s3@bucket/path/file.pdf`)
-   - `workflow_id`: Links assessment to the workflow that created it
-   - `assessment`: Contains relevance score, topics, and processing decision
-
-3. **documents**: Processed document metadata
-   - `document_id`: Unique identifier
-   - `document_path`: Full path with source prefix
-   - `source_type`: Type of source (local/s3/gdrive)
-   - `chunk_count`: Number of chunks created
-   - `status`: Processing status
-
-4. **chunks**: Document chunks with embeddings
-   - `document_id`: Links to parent document
-   - `chunk_text`: Extracted text content
-   - `embedding`: voyage-context-3 vector (1024 dimensions)
-   - `has_visual_elements`: Boolean flag for visual content
-
-5. **buckets**: S3 bucket configurations
-6. **gdrive**: Google Drive folder configurations
-7. **industry_mappings**: Industry and topic classifications
-8. **scheduled_reports**: Generated report metadata and file paths
-9. **report_templates**: Report structure templates by industry/use case
-
-## 📂 Document Sources
-
-The system supports ingesting documents from multiple sources:
-
-### 1. Local Files (Docker Volume)
-Documents can be uploaded via API and stored in the Docker volume:
 ```bash
-# Upload documents
-curl -X POST http://localhost:8000/api/upload/documents \
-  -F "files=@document.pdf" \
-  -F "industry=fsi" \
-  -F "use_case=credit_rating"
-
-# Available use cases: credit_rating, payment_exception, investment_research, kyc_onboarding, loan_origination
-
-# List uploaded documents in an industry/use_case
-curl "http://localhost:8000/api/upload/documents/fsi?use_case=credit_rating"
-
-# Delete specific document in an industry/use_case
-curl -X DELETE "http://localhost:8000/api/upload/documents/fsi/document.pdf?use_case=credit_rating"
-
-# Delete all documents in an industry/use_case folder
-curl -X DELETE "http://localhost:8000/api/upload/documents/fsi?use_case=credit_rating"
-
-# Ingest from local storage
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": ["@local@/docs/fsi/credit_rating"],
-    "workflow_id": "local_fsi_ingestion"
-  }'
-```
-
-#### Google Drive Structure:
-```
-📁 FSI Document Intelligence Demo/
-├── 📁 fsi/
-│   ├── 📁 credit_rating/
-│   ├── 📁 risk_assessment/
-│   └── 📁 compliance/
-├── 📁 healthcare/
-│   └── 📁 patient_records/
-├── 📁 insurance/
-│   └── 📁 policies/
-├── 📁 manufacturing/
-│   └── 📁 quality_control/
-├── 📁 media/
-│   └── 📁 articles/
-└── 📁 retail/
-    └── 📁 general/
-```
-
-#### Google Drive Usage:
-```bash
-# Ingest from Google Drive FSI folder
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": ["@gdrive@fsi/credit_rating"],
-    "workflow_id": "gdrive_fsi_ingestion"
-  }'
-```
-
-#### S3 Document Sources by Industry:
-Configure your own S3 bucket structure following this pattern:
-- **FSI**: `s3://YOUR-BUCKET/your-path/fsi/`
-- **Healthcare**: `s3://YOUR-BUCKET/your-path/healthcare/`
-- **Insurance**: `s3://YOUR-BUCKET/your-path/insurance/`
-- **Manufacturing**: `s3://YOUR-BUCKET/your-path/manufacturing/`
-- **Media**: `s3://YOUR-BUCKET/your-path/media/`
-- **Retail**: `s3://YOUR-BUCKET/your-path/retail/`
-
-#### S3 Usage Examples
-```bash
-# Ingest from S3 FSI folder
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": ["@s3@fsi"],
-    "workflow_id": "s3_fsi_ingestion"
-  }'
-
-# Ingest from specific S3 subfolder with use case
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": ["@s3@fsi/credit_rating"],
-    "workflow_id": "s3_fsi_credit_rating"
-  }'
-
-# Mix local and S3 sources in one workflow
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": [
-      "@local@/docs/fsi/credit_rating",
-      "@s3@fsi/reports"
-    ],
-    "workflow_id": "mixed_sources_ingestion"
-  }'
-```
-
-#### AWS Authentication for S3
-The system uses AWS SSO for authentication. No access keys required:
-1. Configure AWS SSO: `aws configure sso`
-2. Login: `aws sso login --profile your-profile`
-3. Set environment variable: `export AWS_PROFILE=your-profile`
-
-### Source Path Format
-All source types use a consistent prefix pattern for clarity:
-- **Local files**: `@local@/docs/{industry}/{use_case}`
-- **S3 files**: `@s3@{industry}` or `@s3@{industry}/{subfolder}`
-- **Google Drive**: `@gdrive@{industry}/{use_case}`
-- All three sources can be mixed in the same ingestion workflow
-
-Document paths stored in MongoDB include full source information:
-- Local: `@local@/path/to/file.pdf`
-- S3: `@s3@bucket-name/path/to/file.pdf`
-- Google Drive: `@gdrive@industry/use_case/file.pdf`
-
-#### Mixed Source Example:
-```bash
-curl -X POST http://localhost:8000/api/ingestion/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source_paths": [
-      "@local@/docs/fsi/credit_rating",
-      "@s3@fsi/reports",
-      "@gdrive@fsi/compliance"
-    ],
-    "workflow_id": "mixed_all_sources"
-  }'
-```
-
-## 🎯 Context-Aware Document Assessment
-
-The system evaluates documents based on their industry and topic context extracted from the source path:
-
-### How It Works
-1. **Path Analysis**: Extracts industry and topic from source paths
-   - Example: `@s3@fsi/credit_rating` → Industry: "financial services", Topic: "credit rating"
-   
-2. **Relevance Scoring**: Documents are evaluated against:
-   - Industry relevance (e.g., is this a financial services document?)
-   - Topic relevance (e.g., is this about credit ratings?)
-   - Documents matching EITHER criteria are accepted
-
-3. **Strict Filtering**: Automatically rejects:
-   - Food receipts, personal documents, entertainment content
-   - Documents with no business relevance to the context
-   - Test or sample documents
-
-### Supported Industries
-- **fsi**: Financial Services
-- **healthcare**: Healthcare
-- **insurance**: Insurance
-- **manufacturing**: Manufacturing
-- **media**: Media and Entertainment
-- **retail**: Retail
-
-### Configuration
-Industry and topic mappings are stored in MongoDB and can be updated without code changes.
-
-## 🛠️ Development Commands
-
-### Frontend
-```bash
-# Install dependencies
-npm install
-
-# Run development server
+cd frontend
 npm run dev
+```
 
-# Build for production
+The app will be available at `http://localhost:3000`
+
+### Build for Production
+
+```bash
 npm run build
-
-# Start production server
 npm start
 ```
 
 ### Docker
-```bash
-# Build and run all services
-docker-compose up --build
 
-# Run frontend only
-docker-compose up document-intelligence-frontend
+```bash
+# Build and run frontend container
+docker-compose up --build document-intelligence-frontend
 ```
+
+## 🎯 Application Flow
+
+### User Journey
+
+1. **Use Case Selection** (`/use-case`)
+   - Choose from FSI use cases: Credit Rating, Investment Research, KYC Onboarding, Loan Origination, Payment Processing Exception
+
+2. **Data Sources** (`/sources`)
+   - Select document sources: Local files, AWS S3, Google Drive
+   - View architectural talk tracks for each system part
+   - Sync sources to trigger ingestion workflow
+
+3. **Document Intelligence** (`/document-intelligence`)
+   - View processed documents in sidebar
+   - Ask questions using Agentic RAG
+   - Review citations and sources
+   - Generate and view scheduled reports
+
+### FSI Use Cases
+
+The UI supports these financial services use cases:
+- **Credit Rating**: Analyze credit reports and ratings
+- **Investment Research**: Research financial instruments
+- **KYC Onboarding**: Know Your Customer verification
+- **Loan Origination**: Loan application processing
+- **Payment Processing Exception**: Payment issue resolution
+
+> **Backend Details**: For API endpoints, MongoDB collections and document sources configuration, see the [backend repository](https://github.com/mongodb-industry-solutions/document-intelligence)
+
+## 📚 Additional Resources
+
+- **Backend Repository**: [mongodb-industry-solutions/document-intelligence](https://github.com/mongodb-industry-solutions/document-intelligence)
+- **MongoDB Atlas Vector Search**: [Vector Search Documentation](https://www.mongodb.com/docs/atlas/atlas-vector-search/)
+- **VoyageAI**: [voyage-context-3 Embeddings](https://blog.voyageai.com/)
+- **LangGraph**: [Multi-Agent Systems](https://langchain-ai.github.io/langgraph/concepts/multi_agent/)
+
+## 📄 License
+
+See [LICENSE](LICENSE) file for details.
