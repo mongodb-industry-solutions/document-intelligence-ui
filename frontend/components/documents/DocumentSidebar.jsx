@@ -111,12 +111,10 @@ const DocumentSidebar = ({
   const handleDeleteConfirm = async () => {
     if (documentToDelete) {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${documentToDelete.document_id}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          setShowDeleteModal(false);
+        // Use API client which uses proxy pattern
+        await DocumentsAPIClient.deleteDocument(documentToDelete.document_id);
+        
+        setShowDeleteModal(false);
           const deletedDocName = documentToDelete.document_name;
           setDocumentToDelete(null);
 

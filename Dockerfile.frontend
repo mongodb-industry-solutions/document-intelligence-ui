@@ -13,6 +13,9 @@ COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ .
 
+# Set the port environment variable for Next.js
+ENV PORT=8080
+
 # Build Next.js app (NEXT_PUBLIC_* vars are embedded here)
 RUN npm run build
 

@@ -1,5 +1,6 @@
-// Direct backend API calls (no Next.js proxy)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+// Use Next.js API routes as proxy to backend (server-side)
+// This avoids CORS issues with cross-origin requests in Kanopy/K8s deployments
+const API_BASE_URL = '/api';
 
 /**
  * Document API client for interacting with backend document endpoints
