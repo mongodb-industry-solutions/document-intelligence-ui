@@ -108,9 +108,8 @@ const DataSources = ({ onContinue, onBack }) => {
     setCanContinue(false);
     setLogs([]);
 
-    // Log Backend API URL being used
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    console.log('🔗 Source Sync - Backend API URL:', backendUrl);
+    // Log sync details
+    console.log('🔗 Source Sync - Using proxy pattern');
     console.log('📋 Use Case:', useCase);
     console.log('📂 Sources:', selectedSources);
 

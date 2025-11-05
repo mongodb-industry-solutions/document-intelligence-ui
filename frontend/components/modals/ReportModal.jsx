@@ -42,11 +42,9 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
       setError(null);
       
       // Log fetch report details
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-      console.log('🔍 Fetch Latest Report - Backend API URL:', backendUrl);
+      console.log('🔍 Fetch Latest Report');
       console.log('🏭 Industry:', industry);
       console.log('📋 Use Case:', useCase);
-      console.log('🔗 Full URL:', `${backendUrl}/api/reports/latest/${industry}/${useCase}`);
       
       const reportData = await ReportsAPIClient.getLatestReport(industry, useCase);
       setReport(reportData);
@@ -62,17 +60,16 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     if (!report) return;
 
     // Log view details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    console.log('👁️ View Report - Backend API URL:', backendUrl);
+    console.log('👁️ View Report');
     console.log('🆔 Report ID:', report.report_id);
     console.log('🏭 Industry:', industry);
     console.log('📋 Use Case:', useCase);
     console.log('📌 Status:', report.status);
 
-    // Build preview URL - use /preview endpoint for BOTH generated and seed reports
+    // Build preview URL using proxy pattern
     const url = report.status === 'seed'
-      ? `${backendUrl}/api/reports/seed/${industry}/${useCase}/preview`
-      : `${backendUrl}/api/reports/${report.report_id}/preview`;
+      ? `/api/reports/seed/${industry}/${useCase}/preview`
+      : `/api/reports/${report.report_id}/preview`;
     
     console.log('🔗 Opening preview URL in new tab:', url);
     
@@ -84,17 +81,11 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     if (!report) return;
 
     // Log download details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    console.log('📥 Download Report - Backend API URL:', backendUrl);
+    console.log('📥 Download Report');
     console.log('🆔 Report ID:', report.report_id);
     console.log('🏭 Industry:', industry);
     console.log('📋 Use Case:', useCase);
     console.log('📌 Status:', report.status);
-    if (report.status === "seed") {
-      console.log('🔗 Full URL:', `${backendUrl}/api/reports/seed/${industry}/${useCase}/download`);
-    } else {
-      console.log('🔗 Full URL:', `${backendUrl}/api/reports/${report.report_id}/download`);
-    }
 
     try {
       setDownloading(true);
@@ -160,11 +151,9 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     setError(null);
     
     // Log report generation details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    console.log('📊 Generate Ad-hoc Report - Backend API URL:', backendUrl);
+    console.log('📊 Generate Ad-hoc Report');
     console.log('🏭 Industry:', industry);
     console.log('📋 Use Case:', useCase);
-    console.log('🔗 Full URL:', `${backendUrl}/api/reports/generate-adhoc`);
     
     // Show immediate feedback
     pushToast({
