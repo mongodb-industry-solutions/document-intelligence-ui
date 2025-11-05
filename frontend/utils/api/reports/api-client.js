@@ -1,7 +1,7 @@
 // Reports API client for scheduled reports operations
 
 // Direct backend API calls (no Next.js proxy)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export const ReportsAPIClient = {
   // Get latest report for a specific industry/use case

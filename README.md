@@ -80,7 +80,7 @@ Create `frontend/.env.local`:
 
 ```bash
 # Backend API URL (FastAPI)
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 > **Note**: The frontend communicates only with the FastAPI backend, not directly with MongoDB.
@@ -94,7 +94,7 @@ cd frontend
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`
+The app will be available at `http://localhost:8080`
 
 ### Build for Production
 

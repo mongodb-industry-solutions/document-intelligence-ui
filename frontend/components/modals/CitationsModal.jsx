@@ -17,7 +17,7 @@ const CitationsModal = ({ isOpen, onClose, citations = [] }) => {
   if (!isOpen) return null;
 
   const handleViewDocument = (documentId) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     const viewUrl = `${API_URL}/api/documents/${documentId}/view`;
     
     console.log('👁️ Opening source document from citation:', documentId);
