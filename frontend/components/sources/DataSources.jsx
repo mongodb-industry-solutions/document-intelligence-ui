@@ -109,7 +109,7 @@ const DataSources = ({ onContinue, onBack }) => {
     setLogs([]);
 
     // Log Backend API URL being used
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     console.log('🔗 Source Sync - Backend API URL:', backendUrl);
     console.log('📋 Use Case:', useCase);
     console.log('📂 Sources:', selectedSources);

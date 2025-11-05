@@ -61,7 +61,7 @@ Create a `.env.local` file in the frontend directory with the following variable
 
 ```bash
 # Backend API Configuration (Client-side - requires NEXT_PUBLIC_ prefix)
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8080
 
 # Optional: Additional configuration can be added here
 NEXT_PUBLIC_LOG_POLL_INTERVAL=2000
@@ -87,7 +87,7 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:8000](http://localhost:8000) in your browser
+4. Open [http://localhost:8080](http://localhost:8080) in your browser
 
 ## Navigation Flow
 
@@ -158,7 +158,7 @@ Returning to the root URL (`/`) resets the flow for a fresh start.
 - **localStorage** - Client-side state persistence
 - **Playwright** - Browser automation and testing
 - **lucide-react** - Icon library for UI elements
-- **Backend API** - FastAPI backend on port 8000
+- **Backend API** - FastAPI backend on port 8080
 
 ## Component Pattern
 

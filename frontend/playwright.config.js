@@ -11,7 +11,7 @@ module.exports = defineConfig({
   // Browser options
   use: {
     // Base URL for the application
-    baseURL: 'http://localhost:8000',
+    baseURL: 'http://localhost:8080',
     
     // Browser viewport
     viewport: { width: 1280, height: 720 },
@@ -45,7 +45,7 @@ module.exports = defineConfig({
   // Run local dev server before tests
   webServer: {
     command: 'npm run dev',
-    port: 8000,
+    port: 8080,
     reuseExistingServer: true,
   },
 });

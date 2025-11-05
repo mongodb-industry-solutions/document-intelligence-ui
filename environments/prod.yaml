@@ -1,14 +1,12 @@
 env:
   NODE_ENV: prod
   
-# Secret environment variables (references to K8s secrets)
 envSecrets:
-  NEXT_PUBLIC_API_URL: document-intelligence-ui-secrets
+  NEXT_PUBLIC_API_URL: document-intelligence-ui
+  NODE_ENV: document-intelligence-ui
 
-# Add IRSA configuration here
 serviceAccount:
   enabled: true
-  # create: false  # Don't create a new service account
-  name: irsa-prod  # Use the existing one
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::275662791714:role/kanopy-prod-cicd-irsa
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-prod-cicd-irsa"

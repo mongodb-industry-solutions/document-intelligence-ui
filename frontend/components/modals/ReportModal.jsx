@@ -42,7 +42,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
       setError(null);
       
       // Log fetch report details
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       console.log('🔍 Fetch Latest Report - Backend API URL:', backendUrl);
       console.log('🏭 Industry:', industry);
       console.log('📋 Use Case:', useCase);
@@ -62,7 +62,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     if (!report) return;
 
     // Log view details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     console.log('👁️ View Report - Backend API URL:', backendUrl);
     console.log('🆔 Report ID:', report.report_id);
     console.log('🏭 Industry:', industry);
@@ -84,7 +84,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     if (!report) return;
 
     // Log download details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     console.log('📥 Download Report - Backend API URL:', backendUrl);
     console.log('🆔 Report ID:', report.report_id);
     console.log('🏭 Industry:', industry);
@@ -160,7 +160,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     setError(null);
     
     // Log report generation details
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     console.log('📊 Generate Ad-hoc Report - Backend API URL:', backendUrl);
     console.log('🏭 Industry:', industry);
     console.log('📋 Use Case:', useCase);
@@ -235,7 +235,7 @@ const ReportModal = ({ isOpen, onClose, industry, useCase }) => {
     };
     
     // Start polling after a short delay
-    setTimeout(pollForReport, 3000);
+    setTimeout(pollForReport, 8080);
   };
 
   if (!isOpen) return null;
