@@ -81,8 +81,8 @@ const DocumentSidebar = ({
   };
 
   const handleViewDocument = (documentId) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    const viewUrl = `${API_URL}/api/documents/${documentId}/view`;
+    // Use proxy pattern
+    const viewUrl = `/api/documents/${documentId}/view`;
     
     console.log('👁️ Opening document in new tab:', viewUrl);
     
@@ -111,44 +111,40 @@ const DocumentSidebar = ({
   const handleDeleteConfirm = async () => {
     if (documentToDelete) {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${documentToDelete.document_id}`, {
-          method: 'DELETE',
+        // Use API client which uses proxy pattern
+        await DocumentsAPIClient.deleteDocument(documentToDelete.document_id);
+        
+        const deletedDocName = documentToDelete.document_name;
+        setShowDeleteModal(false);
+        setDocumentToDelete(null);
+
+        // Show success toast
+        pushToast({
+          variant: 'success',
+          title: 'Document deleted successfully',
+          description: `"${deletedDocName}" has been permanently removed from the system.`,
+          dismissible: true,
+          progress: 1,
         });
 
-        if (response.ok) {
-          setShowDeleteModal(false);
-          const deletedDocName = documentToDelete.document_name;
-          setDocumentToDelete(null);
-
-          // Show success toast
-          pushToast({
-            variant: 'success',
-            title: 'Document deleted successfully',
-            description: `"${deletedDocName}" has been permanently removed from the system.`,
-            dismissible: true,
-            progress: 1,
-          });
-
-          // Call the parent callback to refresh the document list
-          if (onDocumentDeleted) {
-            onDocumentDeleted(documentToDelete.document_id);
-          }
-          onRefresh();
-        } else {
-          console.error('Failed to delete document');
-          pushToast({
-            variant: 'error',
-            title: 'Deletion failed',
-            description: 'Unable to delete the document. Please try again.',
-            dismissible: true,
-          });
+        // Call the parent callback to refresh the document list
+        if (onDocumentDeleted) {
+          onDocumentDeleted(documentToDelete.document_id);
         }
+        onRefresh();
       } catch (error) {
+        // API client throws errors for both failed responses and network issues
         console.error('Error deleting document:', error);
+        
+        // Determine error type based on message
+        const isFetchError = error.message?.includes('Failed to delete document');
+        
         pushToast({
           variant: 'error',
-          title: 'Deletion error',
-          description: 'An error occurred while deleting the document. Please try again.',
+          title: isFetchError ? 'Deletion failed' : 'Deletion error',
+          description: isFetchError 
+            ? 'Unable to delete the document. Please try again.'
+            : 'An error occurred while deleting the document. Please try again.',
           dismissible: true,
         });
       }

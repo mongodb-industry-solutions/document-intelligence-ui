@@ -21,8 +21,8 @@ import { docTalkTrack as docsTalkTrack } from "@/app/sources/docs_talkTrack.js";
 import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
 
 
-// Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// Use Next.js API routes (proxy pattern) to avoid CORS issues
+const API_BASE_URL = '/api';
 
 
 const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
@@ -89,7 +89,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
 
   const fetchAgentPersona = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/qa/persona?use_case=${useCase}&industry=fsi`);
+      const response = await fetch(`${API_BASE_URL}/qa/persona?use_case=${useCase}&industry=fsi`);
       if (response.ok) {
         const data = await response.json();
         setAgentPersona(data);
@@ -150,7 +150,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       if (!sessionId) return;
       
       try {
-        const res = await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`);
+        const res = await fetch(`${API_BASE_URL}/qa/logs/${sessionId}`);
         if (res.ok) {
           const data = await res.json();
           console.log(`📊 Fetched ${data.logs ? data.logs.length : 0} thinking logs for session ${sessionId}`);
@@ -187,7 +187,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
   const handleStartNewChat = async () => {
     try {
       // Call backend to start new session
-      const res = await fetch(`${API_BASE_URL}/api/qa/new-session`, {
+      const res = await fetch(`${API_BASE_URL}/qa/new-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -251,7 +251,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
       setCurrentQuerySessionId(sessionId);
 
       // Use agentic RAG endpoint
-      const endpoint = '/api/qa/query';
+      const endpoint = '/qa/query';
       // For memory questions, don't filter by documents
       const documentIds = questionText === "What questions have I asked you so far?" ? [] : selectedDocuments;
       const requestBody = {
@@ -301,7 +301,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         // Clean up logs from database
         if (sessionId) {
           try {
-            await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`, {
+            await fetch(`${API_BASE_URL}/qa/logs/${sessionId}`, {
               method: 'DELETE'
             });
             console.log(`🧹 Cleaned up thinking logs for session ${sessionId}`);
@@ -328,7 +328,7 @@ const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
         const sessionId = currentQuerySessionId;
         if (sessionId) {
           try {
-            await fetch(`${API_BASE_URL}/api/qa/logs/${sessionId}`, {
+            await fetch(`${API_BASE_URL}/qa/logs/${sessionId}`, {
               method: 'DELETE'
             });
             console.log(`🧹 Cleaned up thinking logs after error for session ${sessionId}`);

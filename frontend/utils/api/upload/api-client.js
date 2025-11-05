@@ -1,5 +1,5 @@
-// Direct backend API calls (no Next.js proxy)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Use Next.js API routes as proxy to backend (server-side)
+const API_BASE_URL = '/api';
 
 /**
  * Upload API client for document upload functionality
@@ -34,7 +34,7 @@ class UploadAPIClient {
       formData.append('industry', industry);
       formData.append('use_case', useCase);
 
-      const response = await fetch(`${API_BASE_URL}/api/upload/documents`, {
+      const response = await fetch(`${API_BASE_URL}/upload/documents`, {
         method: 'POST',
         body: formData,
       });
@@ -57,7 +57,7 @@ class UploadAPIClient {
    */
   static async getIndustries() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/upload/industries`, {
+      const response = await fetch(`${API_BASE_URL}/upload/industries`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -83,7 +83,7 @@ class UploadAPIClient {
    */
   static async getStorageInfo() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/upload/storage-info`, {
+      const response = await fetch(`${API_BASE_URL}/upload/storage-info`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -110,7 +110,7 @@ class UploadAPIClient {
    */
   static async listUploadedDocuments(industry, useCase) {
     try {
-      let url = `${API_BASE_URL}/api/upload/list/${industry}`;
+      let url = `${API_BASE_URL}/upload/list/${industry}`;
       if (useCase) {
         const queryParams = new URLSearchParams({ use_case: useCase });
         url += `?${queryParams}`;
@@ -143,7 +143,7 @@ class UploadAPIClient {
    */
   static async deleteUploadedDocument(industry, filename) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/upload/delete/${industry}/${filename}`, {
+      const response = await fetch(`${API_BASE_URL}/upload/delete/${industry}/${filename}`, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',

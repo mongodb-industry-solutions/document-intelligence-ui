@@ -1,10 +1,14 @@
 env:
   NODE_ENV: staging
-  # Use internal k8s service - bypasses authentication
+  # Internal K8s service URL for backend communication (server-side only)
   INTERNAL_API_URL: http://document-intelligence-web-app:80
-  # Keep external URL as fallback (though it won't be used due to auth issues)
-  NEXT_PUBLIC_API_URL: https://document-intelligence.industrysolutions.staging.corp.mongodb.com
+  
+envSecrets:
+  NEXT_PUBLIC_API_URL: document-intelligence-ui
+  NODE_ENV: document-intelligence-ui
 
-# No service account needed for frontend
 serviceAccount:
-  enabled: false
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-staging-cicd-irsa"
