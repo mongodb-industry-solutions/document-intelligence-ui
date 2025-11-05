@@ -23,7 +23,7 @@ export const documentService = {
 
   // Get list of uploaded files
   async getFiles() {
-    const response = await fetch(`${API_BASE_URL}/api/files`);
+    const response = await fetch(`${API_BASE_URL}/files`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch files');
@@ -34,7 +34,7 @@ export const documentService = {
 
   // Delete a file
   async deleteFile(filename) {
-    const response = await fetch(`${API_BASE_URL}/api/files/${filename}`, {
+    const response = await fetch(`${API_BASE_URL}/files/${filename}`, {
       method: 'DELETE',
     });
     
@@ -64,7 +64,7 @@ export const documentService = {
 
   // Get document preview
   async getPreview(filename, chunk) {
-    const response = await fetch(`${API_BASE_URL}/api/preview?filename=${filename}&chunk=${chunk}`);
+    const response = await fetch(`${API_BASE_URL}/preview?filename=${filename}&chunk=${chunk}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch preview');
