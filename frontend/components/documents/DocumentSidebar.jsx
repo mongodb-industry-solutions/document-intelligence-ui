@@ -81,8 +81,8 @@ const DocumentSidebar = ({
   };
 
   const handleViewDocument = (documentId) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    const viewUrl = `${API_URL}/api/documents/${documentId}/view`;
+    // Use proxy pattern
+    const viewUrl = `/api/documents/${documentId}/view`;
     
     console.log('👁️ Opening document in new tab:', viewUrl);
     
