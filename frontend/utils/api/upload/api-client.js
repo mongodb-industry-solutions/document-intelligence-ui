@@ -1,5 +1,5 @@
-// Direct backend API calls (no Next.js proxy)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+// Use Next.js API routes as proxy to backend (server-side)
+const API_BASE_URL = '/api';
 
 /**
  * Upload API client for document upload functionality

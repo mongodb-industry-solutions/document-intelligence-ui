@@ -1,5 +1,7 @@
 env:
   NODE_ENV: staging
+  # Internal K8s service URL for backend communication (server-side only)
+  INTERNAL_API_URL: http://document-intelligence-web-app:80
   
 envSecrets:
   NEXT_PUBLIC_API_URL: document-intelligence-ui

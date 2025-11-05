@@ -21,8 +21,8 @@ import { docTalkTrack as docsTalkTrack } from "@/app/sources/docs_talkTrack.js";
 import { sourceTalkTrack as sourcesTalkTrack } from "@/app/sources/sources_talkTrack.js";
 
 
-// Use environment variable for backend URL with fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// Use Next.js API routes (proxy pattern) to avoid CORS issues
+const API_BASE_URL = '/api';
 
 
 const DocumentAssistant = ({ selectedDocuments, documents, useCase }) => {
