@@ -83,7 +83,7 @@ class DocumentsAPIClient {
    */
   static async getRawDocument(documentId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}/raw`, {
+      const response = await fetch(`${API_BASE_URL}/documents/${documentId}/raw`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
