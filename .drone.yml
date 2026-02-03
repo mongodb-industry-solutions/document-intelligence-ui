@@ -102,9 +102,9 @@ steps:
         - "ingress.hosts[0]=document-intelligence-ui.industrysolutions.prod.corp.mongodb.com"
         - "mesh.enabled=true"
         - "env.NEXT_PUBLIC_API_URL=https://document-intelligence.industrysolutions.prod.corp.mongodb.com"
-        - "resources.limits.cpu=2000m"
+        - "resources.limits.cpu=1400m"
         - "resources.limits.memory=2048Mi"
-        - "resources.requests.cpu=500m"
+        - "resources.requests.cpu=250m"
         - "resources.requests.memory=512Mi"
       api_server: https://api.prod.corp.mongodb.com
       kubernetes_token:
