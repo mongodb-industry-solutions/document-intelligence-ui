@@ -1,11 +1,11 @@
 env:
   NODE_ENV: prod
   # Internal K8s service URL for backend communication (server-side only)
-  INTERNAL_API_URL: http://document-intelligence-web-app:80
-  
+  INTERNAL_API_URL: http://document-intelligence-bian-prod-web-app:80
+
 envSecrets:
-  NEXT_PUBLIC_API_URL: document-intelligence-ui
-  NODE_ENV: document-intelligence-ui
+  NEXT_PUBLIC_API_URL: document-intelligence-ui-bian
+  NODE_ENV: document-intelligence-ui-bian
 
 serviceAccount:
   enabled: true
