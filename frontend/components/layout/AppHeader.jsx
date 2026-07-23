@@ -56,7 +56,9 @@ function AppHeader() {
     <>
       <header className={styles.header}>
         <div className={styles.container}>
-          <ClickableStepper currentStep={getCurrentStep()} />
+          <div className={styles.stepperCenter}>
+            <ClickableStepper currentStep={getCurrentStep()} />
+          </div>
           <div className={styles.rightActions}>
             {showStartOverButton && (
               <Button
