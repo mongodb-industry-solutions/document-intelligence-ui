@@ -1,0 +1,20 @@
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.bianModelLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #889397;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.bianModelLink:hover {
+  color: #00684a;
+  text-decoration: underline;
+}
