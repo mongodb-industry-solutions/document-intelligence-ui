@@ -50,13 +50,13 @@ export default function DataSourcesPage() {
   }
 
   return (
-    <div style={{ 
+    <div style={{
       minHeight: "100vh",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#F5F6F7",
-      padding: "20px"
+      padding: "88px 20px 20px"
     }}>
       <DataSources onContinue={handleContinue} onBack={handleBack} />
     </div>
