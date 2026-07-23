@@ -3,10 +3,16 @@ FROM node:22-alpine
 # Accept build arguments
 ARG NEXT_PUBLIC_API_URL=http://localhost:8080
 ARG NODE_ENV=dev
+# Browser-facing URL of the standalone BIAN Data Model Explorer. Baked at build
+# time (NEXT_PUBLIC_* is embedded during `npm run build`); a runtime env var
+# would not reach the prerendered client bundle. Per-env value from build_args
+# in .drone.yml; defaults to the deployed staging explorer.
+ARG NEXT_PUBLIC_BIAN_MODEL_URL=https://leafy-bank-bian-model.industrysolutions.staging.corp.mongodb.com
 
 # Set environment variables for build process
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NODE_ENV=$NODE_ENV
+ENV NEXT_PUBLIC_BIAN_MODEL_URL=$NEXT_PUBLIC_BIAN_MODEL_URL
 
 WORKDIR /app
 COPY frontend/package*.json ./

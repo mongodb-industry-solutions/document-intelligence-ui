@@ -6,6 +6,7 @@ import { useState } from "react";
 import Button from "@leafygreen-ui/button";
 import { RotateCcw, AlertTriangle } from "lucide-react";
 import ClickableStepper from "./ClickableStepper";
+import HeaderActions from "./HeaderActions";
 import styles from "./AppHeader.module.css";
 
 function AppHeader() {
@@ -56,17 +57,20 @@ function AppHeader() {
       <header className={styles.header}>
         <div className={styles.container}>
           <ClickableStepper currentStep={getCurrentStep()} />
-          {showStartOverButton && (
-            <Button
-              variant="dangerOutline"
-              size="default"
-              leftGlyph={<RotateCcw size={16} />}
-              onClick={handleStartOver}
-              className={styles.startOverButton}
-            >
-              Start Over
-            </Button>
-          )}
+          <div className={styles.rightActions}>
+            {showStartOverButton && (
+              <Button
+                variant="dangerOutline"
+                size="default"
+                leftGlyph={<RotateCcw size={16} />}
+                onClick={handleStartOver}
+                className={styles.startOverButton}
+              >
+                Start Over
+              </Button>
+            )}
+            <HeaderActions />
+          </div>
         </div>
       </header>
 

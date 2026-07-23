@@ -1,5 +1,6 @@
 import { GeistSans } from "geist/font/sans";
 import { SelectionProvider } from "@/contexts/SelectionContext";
+import GlobalHeaderActions from "@/components/layout/GlobalHeaderActions";
 import "./globals.css";
 
 export const metadata = {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={GeistSans.className}>
       <body>
         <SelectionProvider>
+          <GlobalHeaderActions />
           {children}
         </SelectionProvider>
       </body>

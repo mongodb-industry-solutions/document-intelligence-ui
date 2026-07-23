@@ -30,7 +30,14 @@
 
 .startOverButton {
   flex-shrink: 0;
-  
+
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
 }
 
 /* Modal Styles (matching ReportModal pattern) */
