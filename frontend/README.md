@@ -113,12 +113,6 @@ Returning to the root URL (`/`) resets the flow for a fresh start.
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-- `npm test` - Run Playwright tests
-- `npm run test:ui` - Open Playwright test UI
-- `npm run test:debug` - Debug tests step by step
-- `npm run test:headed` - Run tests with visible browser
-- `npm run automate` - Run browser automation script
-- `npm run playwright:install` - Install Playwright browsers
 
 ## Key Features
 
@@ -156,7 +150,6 @@ Returning to the root URL (`/`) resets the flow for a fresh start.
 - **LeafyGreen UI** - MongoDB's design system components
 - **CSS Modules** - Component-scoped styling
 - **localStorage** - Client-side state persistence
-- **Playwright** - Browser automation and testing
 - **lucide-react** - Icon library for UI elements
 - **Backend API** - FastAPI backend on port 8080
 
@@ -174,17 +167,6 @@ components/
     DocumentUpload.jsx
     DocumentUpload.module.css
 ```
-
-## Testing & Automation
-
-The project includes Playwright for browser automation and testing:
-
-- **Test files**: Located in `tests/` directory
-- **Automation scripts**: Located in `scripts/` directory
-- **Screenshots**: Saved to `screenshots/` directory
-- **Configuration**: `playwright.config.js`
-
-See `PLAYWRIGHT.md` for detailed testing documentation.
 
 ## UI Components
 

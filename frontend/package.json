@@ -9,13 +9,7 @@
     "dev": "next dev --turbopack --port 8080",
     "build": "next build",
     "start": "next start --port 8080",
-    "lint": "next lint",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
-    "test:headed": "playwright test --headed",
-    "automate": "node scripts/browser-automation.js",
-    "playwright:install": "playwright install"
+    "lint": "next lint"
   },
   "dependencies": {
     "@leafygreen-ui/button": "^25.0.3",
@@ -33,12 +27,7 @@
     "lucide-react": "^0.542.0",
     "marked": "^16.2.1",
     "next": "^15.5.9",
-    "playwright-mcp": "^0.0.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
-  },
-  "devDependencies": {
-    "@playwright/mcp": "^0.0.36",
-    "playwright": "^1.56.0-alpha-1756505518000"
   }
 }
