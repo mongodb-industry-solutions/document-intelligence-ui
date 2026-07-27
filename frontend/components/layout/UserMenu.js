@@ -60,7 +60,7 @@ const SECTIONS = [
         id: "67a1000000000000000000004",
         name: "Sophia",
         role: "Investment Portfolio Manager",
-        url: "https://leafy-bank-ui.industrysolutions.prod.corp.mongodb.com/asset-portfolio",
+        url: "https://capital-markets-ui.industrysolutions.prod.corp.mongodb.com/",
       },
       {
         id: "67a1000000000000000000003",
