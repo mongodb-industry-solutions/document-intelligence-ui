@@ -6,14 +6,26 @@
 }
 
 .container {
-  max-width: 1440px;
-  margin: 0 auto;
+  position: relative;
+  width: 100%;
   padding: 0 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 24px;
-  
+}
+
+.stepperCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* Restore the original long step flow: fill a wide, fixed span so the
+     LeafyGreen connectors stretch as before. Shrinks via the calc() only on
+     narrow viewports so the centered stepper never slides under the
+     right-aligned actions (~450px reserved on each side for symmetry). */
+  width: min(820px, calc(100vw - 960px));
+  display: flex;
+  align-items: center;
 }
 
 .titleSection {
@@ -30,7 +42,14 @@
 
 .startOverButton {
   flex-shrink: 0;
-  
+
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
 }
 
 /* Modal Styles (matching ReportModal pattern) */
