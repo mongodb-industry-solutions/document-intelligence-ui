@@ -54,7 +54,7 @@ const SECTIONS = [
         id: "67a1000000000000000000002",
         name: "Ana",
         role: "Risk Analyst",
-        url: "https://fsi-fraud-detection.industrysolutions.prod.corp.mongodb.com/",
+        url: "https://fsi-fraud-detection-bian.industrysolutions.prod.corp.mongodb.com/",
       },
       {
         id: "67a1000000000000000000004",
